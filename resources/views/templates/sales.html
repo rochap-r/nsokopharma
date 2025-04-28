@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NsokoPharma - Tableau de bord</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            light: '#3b82f6',
+                            dark: '#1d4ed8'
+                        },
+                        secondary: {
+                            light: '#10b981',
+                            dark: '#059669'
+                        },
+                        danger: {
+                            light: '#ef4444',
+                            dark: '#dc2626'
+                        },
+                        warning: {
+                            light: '#f59e0b',
+                            dark: '#d97706'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .dark body {
+            background-color: #111827;
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-collapsed {
+            width: 5rem;
+        }
+
+        .sidebar-collapsed .nav-text {
+            display: none;
+        }
+
+        .sidebar-collapsed .logo-text {
+            display: none;
+        }
+
+        .sidebar-collapsed .search-bar {
+            display: none;
+        }
+
+        .main-content {
+            transition: margin-left 0.3s ease;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .card-hover:hover {
+            box-shadow: 0 10px 15px -3px rgba(255, 255, 255, 0.1), 0 4px 6px -2px rgba(255, 255, 255, 0.05);
+        }
+
+        /* Animation for notifications */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .dark ::-webkit-scrollbar-track {
+            background: #374151;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+
+        /* Sales interface styles */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .product-btn {
+            aspect-ratio: 1/1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ticket-item:hover {
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .dark .ticket-item:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<!-- Sidebar -->
+<div id="sidebar" class="sidebar fixed top-0 left-0 h-screen bg-white dark:bg-gray-800 shadow-lg z-50 w-64 overflow-y-auto">
+    <!-- Sidebar Header -->
+    <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center">
+            <i class="fas fa-pills text-2xl text-primary-light dark:text-primary-dark mr-2"></i>
+            <span class="logo-text text-xl font-bold">Nsoko<span class="text-primary-light dark:text-primary-dark">Pharma</span></span>
+        </div>
+        <button id="sidebar-toggle" class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="mt-2">
+        <div class="px-4 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <span class="nav-text">Navigation</span>
+        </div>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <i class="fas fa-tachometer-alt w-6 text-center mr-3 text-primary-light dark:text-primary-dark"></i>
+            <span class="nav-text">Tableau de bord</span>
+        </a>
+        <a href="#sales-section" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <i class="fas fa-shopping-cart w-6 text-center mr-3 text-green-500 dark:text-green-400"></i>
+            <span class="nav-text">Ventes</span>
+        </a>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <i class="fas fa-pills w-6 text-center mr-3 text-secondary-light dark:text-secondary-dark"></i>
+            <span class="nav-text">Produits et stocks</span>
+        </a>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <i class="fas fa-chart-bar w-6 text-center mr-3 text-yellow-500 dark:text-yellow-400"></i>
+            <span class="nav-text">Rapports</span>
+        </a>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <i class="fas fa-cog w-6 text-center mr-3 text-gray-500 dark:text-gray-400"></i>
+            <span class="nav-text">Paramètres du tenant</span>
+        </a>
+    </nav>
+
+    <!-- Tenant Info -->
+    <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <i class="fas fa-store w-6 text-center text-primary-light dark:text-primary-dark"></i>
+            </div>
+            <div class="ml-3 nav-text">
+                <p class="text-sm font-medium text-gray-900 dark:text-white">Pharmacie du Peuple</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Kolwezi, RDC</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div id="main-content" class="main-content ml-64 transition-all duration-300">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-40">
+        <div class="flex items-center justify-between px-6 py-4">
+            <!-- Page Title -->
+            <h1 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Tableau de bord</h1>
+
+            <!-- Header Right Section -->
+            <div class="flex items-center space-x-4">
+                <!-- Dark Mode Toggle -->
+                <button id="dark-mode-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+                    <i class="fas fa-moon text-gray-700 dark:hidden"></i>
+                    <i class="fas fa-sun text-yellow-300 hidden dark:inline"></i>
+                </button>
+
+                <!-- Notifications -->
+                <div class="relative">
+                    <button id="notification-btn" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600">
+                        <i class="fas fa-bell"></i>
+                        <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                    </button>
+
+                    <!-- Notification Dropdown -->
+                    <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-md shadow-lg overflow-hidden z-50">
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Notifications</h3>
+                        </div>
+                        <div class="max-h-96 overflow-y-auto">
+                            <!-- Notification Items -->
+                            <a href="#" class="block px-4 py-3 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 pt-0.5">
+                                        <div class="h-10 w-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                                            <i class="fas fa-exclamation-circle text-red-500 dark:text-red-400"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-3 flex-1">
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white">5 produits en rupture de stock</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Il y a 10 minutes</p>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="#" class="block px-4 py-3 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 pt-0.5">
+                                        <div class="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                            <i class="fas fa-check-circle text-green-500 dark:text-green-400"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-3 flex-1">
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white">Vente terminée #12345</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Il y a 1 heure</p>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="#" class="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 pt-0.5">
+                                        <div class="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                            <i class="fas fa-info-circle text-blue-500 dark:text-blue-400"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-3 flex-1">
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white">Nouvelle mise à jour disponible</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Aujourd'hui, 09:30</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-700 text-center">
+                            <a href="#" class="text-sm font-medium text-primary-light dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary-light">
+                                Voir toutes les notifications
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Profile Dropdown -->
+                <div class="relative">
+                    <button id="user-menu-btn" class="flex items-center space-x-2 focus:outline-none">
+                        <div class="h-8 w-8 rounded-full bg-primary-light dark:bg-primary-dark flex items-center justify-center text-white">
+                            <span>JP</span>
+                        </div>
+                        <span class="hidden md:inline text-sm font-medium text-gray-700 dark:text-gray-300">Jean Paul</span>
+                        <i class="fas fa-chevron-down text-xs text-gray-500 dark:text-gray-400"></i>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div id="user-menu-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg overflow-hidden z-50">
+                        <div class="py-1">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-user mr-2"></i> Profil
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-exchange-alt mr-2"></i> Changer de tenant
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <main class="p-6">
+        <!-- Status Bar -->
+        <div class="flex items-center justify-between mb-6 text-sm text-gray-600 dark:text-gray-300">
+            <div>
+                <span class="font-medium">Connecté en tant que:</span> Jean Paul (Caissier)
+            </div>
+            <div>
+                <span class="font-medium">Tenant:</span> Pharmacie du Peuple
+            </div>
+            <div id="current-time" class="font-medium">
+                <!-- Time will be inserted by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Sales Section -->
+        <section id="sales-section" class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Interface de vente</h2>
+                <div class="flex space-x-2">
+                    <button class="px-3 py-1 text-xs font-medium rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                        <i class="fas fa-history mr-1"></i> Historique
+                    </button>
+                    <button class="px-3 py-1 text-xs font-medium rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                        <i class="fas fa-trash-alt mr-1"></i> Annuler
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Product Selection -->
+                <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
+                    <div class="mb-4">
+                        <div class="relative">
+                            <input
+                                type="text"
+                                placeholder="Rechercher un produit..."
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700"
+                            >
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- Quick Product Buttons -->
+                    <div class="product-grid">
+                        <button class="product-btn bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg p-3 hover:bg-blue-100 dark:hover:bg-blue-900/30">
+                            <i class="fas fa-pills text-xl mb-2"></i>
+                            <span class="text-sm font-medium">Paracétamol</span>
+                        </button>
+                        <button class="product-btn bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-lg p-3 hover:bg-green-100 dark:hover:bg-green-900/30">
+                            <i class="fas fa-pills text-xl mb-2"></i>
+                            <span class="text-sm font-medium">Amoxicilline</span>
+                        </button>
+                        <button class="product-btn bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 rounded-lg p-3 hover:bg-yellow-100 dark:hover:bg-yellow-900/30">
+                            <i class="fas fa-pills text-xl mb-2"></i>
+                            <span class="text-sm font-medium">Vitamine C</span>
+                        </button>
+                        <button class="product-btn bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-lg p-3 hover:bg-purple-100 dark:hover:bg-purple-900/30">
+                            <i class="fas fa-pills text-xl mb-2"></i>
+                            <span class="text-sm font-medium">Ibuprofène</span>
+                        </button>
+                        <button class="product-btn bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg p-3 hover:bg-red-100 dark:hover:bg-red-900/30">
+                            <i class="fas fa-pills text-xl mb-2"></i>
+                            <span class="text-sm font-medium">Aspirine</span>
+                        </button>
+                        <button class="product-btn bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg p-3 hover:bg-indigo-100 dark:hover:bg-indigo-900/30">
+                            <i class="fas fa-pills text-xl mb-2"></i>
+                            <span class="text-sm font-medium">Oméprazole</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Transaction Panel -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Transaction en cours</h3>
+
+                    <!-- Ticket Items -->
+                    <div class="mb-4 max-h-64 overflow-y-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                                <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Produit</th>
+                                <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Qté</th>
+                                <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Prix</th>
+                                <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total</th>
+                                <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"></th>
+                            </tr>
+                            </thead>
+                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            <tr class="ticket-item">
+                                <td class="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">Paracétamol 500mg</td>
+                                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">2</td>
+                                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">500 FC</td>
+                                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 dark:text-white">1000 FC</td>
+                                <td class="px-3 py-2 whitespace-nowrap text-right text-sm font-medium">
+                                    <button class="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="ticket-item">
+                                <td class="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">Amoxicilline 250mg</td>
+                                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">1</td>
+                                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">1500 FC</td>
+                                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900 dark:text-white">1500 FC</td>
+                                <td class="px-3 py-2 whitespace-nowrap text-right text-sm font-medium">
+                                    <button class="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Payment Section -->
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-sm text-gray-600 dark:text-gray-300">Sous-total:</span>
+                            <span class="text-sm font-medium">2500 FC</span>
+                        </div>
+                        <div class="flex justify-between mb-4">
+                            <span class="text-sm text-gray-600 dark:text-gray-300">Taxes:</span>
+                            <span class="text-sm font-medium">0 FC</span>
+                        </div>
+                        <div class="flex justify-between text-lg font-bold mb-4">
+                            <span class="text-gray-800 dark:text-gray-200">Total dû:</span>
+                            <span class="text-primary-light dark:text-primary-dark">2500 FC</span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Montant reçu</label>
+                            <div class="relative">
+                                <input
+                                    type="number"
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700"
+                                    placeholder="0"
+                                >
+                                <span class="absolute left-3 top-3 text-gray-500 dark:text-gray-400">FC</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Monnaie rendue</label>
+                            <div class="relative">
+                                <input
+                                    type="number"
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-gray-100 dark:bg-gray-700"
+                                    placeholder="0"
+                                    disabled
+                                >
+                                <span class="absolute left-3 top-3 text-gray-500 dark:text-gray-400">FC</span>
+                            </div>
+                        </div>
+
+                        <!-- Quick Cash Buttons -->
+                        <div class="grid grid-cols-4 gap-2 mb-4">
+                            <button class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
+                                1000 FC
+                            </button>
+                            <button class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
+                                2000 FC
+                            </button>
+                            <button class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
+                                5000 FC
+                            </button>
+                            <button class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
+                                10000 FC
+                            </button>
+                        </div>
+
+                        <button class="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                            <i class="fas fa-check-circle mr-2"></i> Finaliser la vente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Overview -->
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Aperçu du tenant</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Today's Sales -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ventes aujourd'hui</p>
+                            <p class="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">$1,245.00</p>
+                            <p class="mt-1 text-sm text-green-600 dark:text-green-400">
+                                <span class="font-semibold">+12%</span> vs hier
+                            </p>
+                        </div>
+                        <div class="h-12 w-12 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                            <i class="fas fa-shopping-cart text-green-600 dark:text-green-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products in Stock -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Produits en stock</p>
+                            <p class="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">342</p>
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                <span class="font-semibold">5 en rupture</span>
+                            </p>
+                        </div>
+                        <div class="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
+                            <i class="fas fa-pills text-blue-600 dark:text-blue-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expiring Products -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Produits expirant</p>
+                            <p class="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">8</p>
+                            <p class="mt-1 text-sm text-yellow-600 dark:text-yellow-400">
+                                <span class="font-semibold">3 cette semaine</span>
+                            </p>
+                        </div>
+                        <div class="h-12 w-12 rounded-full bg-yellow-100 dark:bg-yellow-900/20 flex items-center justify-center">
+                            <i class="fas fa-hourglass-half text-yellow-600 dark:text-yellow-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Visits -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Clients aujourd'hui</p>
+                            <p class="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">42</p>
+                            <p class="mt-1 text-sm text-green-600 dark:text-green-400">
+                                <span class="font-semibold">+5%</span> vs hier
+                            </p>
+                        </div>
+                        <div class="h-12 w-12 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
+                            <i class="fas fa-users text-purple-600 dark:text-purple-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Transactions -->
+        <section>
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Transactions récentes</h2>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID Transaction</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Caissier</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Montant</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Statut</th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">#PH-2023-001245</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">15/10/2023 10:45</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">Jean Paul</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">2500 FC</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
+                                            Terminée
+                                        </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a href="#" class="text-primary-light dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary-light mr-3">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="#" class="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-500">
+                                    <i class="fas fa-print"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">#PH-2023-001244</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">15/10/2023 09:30</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">Marie K.</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">3500 FC</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
+                                            Terminée
+                                        </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a href="#" class="text-primary-light dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary-light mr-3">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="#" class="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-500">
+                                    <i class="fas fa-print"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">#PH-2023-001243</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">14/10/2023 16:20</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">Jean Paul</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">1800 FC</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
+                                            Terminée
+                                        </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a href="#" class="text-primary-light dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary-light mr-3">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="#" class="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-500">
+                                    <i class="fas fa-print"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-6">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        &copy; 2023 NsokoPharma. Tous droits réservés.
+                    </p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Politique de confidentialité</a>
+                    <a href="#" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Conditions générales</a>
+                    <a href="#" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- Notification Toast -->
+<div id="notification-toast" class="fixed bottom-4 right-4 hidden">
+    <div class="max-w-xs bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden fade-in">
+        <div class="p-4">
+            <div class="flex items-start">
+                <div class="flex-shrink-0">
+                    <i id="toast-icon" class="fas fa-check-circle text-green-500 dark:text-green-400"></i>
+                </div>
+                <div class="ml-3 w-0 flex-1 pt-0.5">
+                    <p id="toast-title" class="text-sm font-medium text-gray-900 dark:text-white">Produit ajouté</p>
+                    <p id="toast-message" class="mt-1 text-sm text-gray-500 dark:text-gray-400">Paracétamol ajouté à la transaction</p>
+                </div>
+                <div class="ml-4 flex-shrink-0 flex">
+                    <button id="toast-close" class="bg-white dark:bg-gray-800 rounded-md inline-flex text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none">
+                        <span class="sr-only">Fermer</span>
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Dark mode toggle functionality
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+    darkModeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+    });
+
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.documentElement.classList.add('dark');
+    }
+
+    // Sidebar toggle functionality
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('main-content');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('sidebar-collapsed');
+        mainContent.classList.toggle('ml-64');
+        mainContent.classList.toggle('ml-20');
+    });
+
+    // Dropdown menus
+    const notificationBtn = document.getElementById('notification-btn');
+    const notificationDropdown = document.getElementById('notification-dropdown');
+    const userMenuBtn = document.getElementById('user-menu-btn');
+    const userMenuDropdown = document.getElementById('user-menu-dropdown');
+
+    notificationBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        notificationDropdown.classList.toggle('hidden');
+        userMenuDropdown.classList.add('hidden');
+    });
+
+    userMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userMenuDropdown.classList.toggle('hidden');
+        notificationDropdown.classList.add('hidden');
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', () => {
+        notificationDropdown.classList.add('hidden');
+        userMenuDropdown.classList.add('hidden');
+    });
+
+    // Prevent dropdowns from closing when clicking inside them
+    notificationDropdown.addEventListener('click', (e) => e.stopPropagation());
+    userMenuDropdown.addEventListener('click', (e) => e.stopPropagation());
+
+    // Update current time
+    function updateTime() {
+        const now = new Date();
+        const timeElement = document.getElementById('current-time');
+        timeElement.textContent = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // Notification toast functionality
+    const toast = document.getElementById('notification-toast');
+    const toastClose = document.getElementById('toast-close');
+    const toastIcon = document.getElementById('toast-icon');
+    const toastTitle = document.getElementById('toast-title');
+    const toastMessage = document.getElementById('toast-message');
+
+    function showToast(type, title, message) {
+        // Set icon and colors based on type
+        switch(type) {
+            case 'success':
+                toastIcon.className = 'fas fa-check-circle text-green-500 dark:text-green-400';
+                break;
+            case 'error':
+                toastIcon.className = 'fas fa-exclamation-circle text-red-500 dark:text-red-400';
+                break;
+            case 'warning':
+                toastIcon.className = 'fas fa-exclamation-triangle text-yellow-500 dark:text-yellow-400';
+                break;
+            case 'info':
+                toastIcon.className = 'fas fa-info-circle text-blue-500 dark:text-blue-400';
+                break;
+        }
+
+        toastTitle.textContent = title;
+        toastMessage.textContent = message;
+        toast.classList.remove('hidden');
+
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            toast.classList.add('hidden');
+        }, 5000);
+    }
+
+    toastClose.addEventListener('click', () => {
+        toast.classList.add('hidden');
+    });
+
+    // Simulate adding a product to show notification
+    const productButtons = document.querySelectorAll('.product-btn');
+    productButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const productName = button.querySelector('span').textContent;
+            showToast('success', 'Produit ajouté', `${productName} ajouté à la transaction`);
+        });
+    });
+
+    // Simulate completing a sale
+    const completeSaleBtn = document.querySelector('button.bg-green-600');
+    if (completeSaleBtn) {
+        completeSaleBtn.addEventListener('click', () => {
+            showToast('success', 'Vente terminée', 'La transaction a été enregistrée avec succès');
+        });
+    }
+</script>
+</body>
+</html>

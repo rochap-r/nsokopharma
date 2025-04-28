@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NsokoPharma - Mot de passe oublié</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            light: '#3b82f6',
+                            dark: '#1d4ed8'
+                        },
+                        secondary: {
+                            light: '#10b981',
+                            dark: '#059669'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+        }
+
+        .dark body {
+            background-color: #111827;
+        }
+
+        .auth-illustration {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+        }
+
+        .dark .auth-illustration {
+            background: linear-gradient(135deg, rgba(29, 78, 216, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+        }
+
+        .auth-btn {
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .dark .auth-btn:hover {
+            box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
+        }
+
+        /* Password strength indicator */
+        .password-strength {
+            height: 4px;
+            transition: all 0.3s ease;
+        }
+
+        /* Animation for success message */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<!-- Header -->
+<header class="bg-white dark:bg-gray-800 shadow-sm">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <i class="fas fa-pills text-2xl text-primary-light dark:text-primary-dark mr-2"></i>
+            <span class="text-xl font-bold">Nsoko<span class="text-primary-light dark:text-primary-dark">Pharma</span></span>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex items-center space-x-6">
+            <a href="#support" class="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors font-medium">
+                Contacter le support
+            </a>
+
+            <!-- Dark Mode Toggle -->
+            <button id="dark-mode-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+                <i class="fas fa-moon text-gray-700 dark:hidden"></i>
+                <i class="fas fa-sun text-yellow-300 hidden dark:inline"></i>
+            </button>
+        </nav>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="flex-grow">
+    <div class="container mx-auto px-4 py-12">
+        <div class="flex flex-col lg:flex-row items-center justify-center">
+            <!-- Auth Form Section -->
+            <div class="w-full lg:w-1/2 lg:pr-12 mb-12 lg:mb-0">
+                <div class="max-w-md mx-auto">
+                    <!-- Request Reset Form (Default View) -->
+                    <div id="request-reset-view">
+                        <div class="text-center mb-8">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-light/10 dark:bg-primary-dark/10 mb-4">
+                                <i class="fas fa-envelope text-3xl text-primary-light dark:text-primary-dark"></i>
+                            </div>
+                            <h1 class="text-3xl font-bold mb-2">Réinitialisation du mot de passe</h1>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Entrez votre adresse e-mail ci-dessous pour recevoir un lien de réinitialisation.
+                            </p>
+                        </div>
+
+                        <!-- Request Reset Form -->
+                        <form id="request-reset-form" class="space-y-6">
+                            <!-- Email Field -->
+                            <div>
+                                <label for="reset-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Adresse e-mail
+                                </label>
+                                <input
+                                    type="email"
+                                    id="reset-email"
+                                    name="email"
+                                    required
+                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700"
+                                    placeholder="votre@email.com"
+                                >
+                                <p id="email-error" class="mt-1 text-sm text-red-600 hidden">Veuillez entrer une adresse e-mail valide.</p>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div>
+                                <button
+                                    type="submit"
+                                    class="w-full auth-btn bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md"
+                                >
+                                    Envoyer le lien
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Back to Login Link -->
+                        <div class="mt-6 text-center">
+                            <a href="login.html" class="text-sm font-medium text-primary-light dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary-light transition-colors">
+                                <i class="fas fa-arrow-left mr-1"></i> Retour à la connexion
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Confirmation Message (Hidden by default) -->
+                    <div id="confirmation-view" class="hidden fade-in">
+                        <div class="text-center mb-8">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 mb-4">
+                                <i class="fas fa-check-circle text-3xl text-green-500 dark:text-green-400"></i>
+                            </div>
+                            <h1 class="text-3xl font-bold mb-2">Lien envoyé !</h1>
+                            <p class="text-gray-600 dark:text-gray-300 mb-6">
+                                Un lien de réinitialisation a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception.
+                            </p>
+                            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-left">
+                                <div class="flex items-start">
+                                    <i class="fas fa-info-circle text-blue-500 dark:text-blue-400 mt-1 mr-3"></i>
+                                    <div>
+                                        <p class="text-sm text-blue-700 dark:text-blue-300">
+                                            Si vous ne voyez pas l'e-mail, vérifiez votre dossier de spam ou contactez notre support technique.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Back to Login Button -->
+                        <div class="mt-8">
+                            <a href="login.html" class="w-full auth-btn bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md inline-flex items-center justify-center">
+                                <i class="fas fa-sign-in-alt mr-2"></i> Retour à la connexion
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Password Reset Form (Hidden by default, shown when coming from reset link) -->
+                    <div id="reset-password-view" class="hidden">
+                        <div class="text-center mb-8">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-light/10 dark:bg-primary-dark/10 mb-4">
+                                <i class="fas fa-lock text-3xl text-primary-light dark:text-primary-dark"></i>
+                            </div>
+                            <h1 class="text-3xl font-bold mb-2">Créez un nouveau mot de passe</h1>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Veuillez entrer votre nouveau mot de passe ci-dessous.
+                            </p>
+                        </div>
+
+                        <!-- Reset Password Form -->
+                        <form id="reset-password-form" class="space-y-6">
+                            <!-- New Password Field -->
+                            <div>
+                                <label for="new-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Nouveau mot de passe
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="password"
+                                        id="new-password"
+                                        name="new-password"
+                                        required
+                                        minlength="8"
+                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700 pr-10"
+                                        placeholder="••••••••"
+                                    >
+                                    <button type="button" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" onclick="togglePasswordVisibility('new-password')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="mt-1">
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
+                                        <div id="password-strength-bar" class="password-strength bg-red-500 rounded-full" style="width: 0%"></div>
+                                    </div>
+                                    <p id="password-strength-text" class="text-xs mt-1 text-gray-500 dark:text-gray-400">Sécurité du mot de passe</p>
+                                </div>
+                            </div>
+
+                            <!-- Confirm Password Field -->
+                            <div>
+                                <label for="confirm-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Confirmez le mot de passe
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="password"
+                                        id="confirm-password"
+                                        name="confirm-password"
+                                        required
+                                        minlength="8"
+                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700 pr-10"
+                                        placeholder="••••••••"
+                                    >
+                                    <button type="button" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" onclick="togglePasswordVisibility('confirm-password')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <p id="password-match-error" class="mt-1 text-sm text-red-600 hidden">Les mots de passe doivent correspondre.</p>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div>
+                                <button
+                                    type="submit"
+                                    class="w-full auth-btn bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md"
+                                >
+                                    Réinitialiser le mot de passe
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Success Message (Hidden by default) -->
+                    <div id="success-view" class="hidden fade-in">
+                        <div class="text-center mb-8">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 mb-4">
+                                <i class="fas fa-check-circle text-3xl text-green-500 dark:text-green-400"></i>
+                            </div>
+                            <h1 class="text-3xl font-bold mb-2">Mot de passe réinitialisé !</h1>
+                            <p class="text-gray-600 dark:text-gray-300 mb-6">
+                                Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter.
+                            </p>
+                            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 text-left">
+                                <div class="flex items-start">
+                                    <i class="fas fa-shield-alt text-green-500 dark:text-green-400 mt-1 mr-3"></i>
+                                    <div>
+                                        <p class="text-sm text-green-700 dark:text-green-300">
+                                            Pour votre sécurité, nous vous recommandons d'utiliser un mot de passe unique que vous n'utilisez pas sur d'autres sites.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Login Button -->
+                        <div class="mt-8">
+                            <a href="login.html" class="w-full auth-btn bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md inline-flex items-center justify-center">
+                                <i class="fas fa-sign-in-alt mr-2"></i> Connexion
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Illustration Section -->
+            <div class="w-full lg:w-1/2">
+                <div class="auth-illustration p-8 rounded-2xl">
+                    <!-- Dynamic illustration that changes based on current view -->
+                    <div id="illustration-container">
+                        <!-- Default illustration (for request reset) -->
+                        <div id="request-illustration">
+                            <div class="relative">
+                                <div class="absolute -inset-4 bg-primary-light dark:bg-primary-dark rounded-2xl opacity-20 blur-lg"></div>
+                                <img
+                                    src="https://images.unsplash.com/photo-1542601098-8fc114e148e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                                    alt="Email envoyé"
+                                    class="relative w-full h-auto rounded-xl shadow-lg"
+                                >
+                            </div>
+                            <div class="mt-8 text-center">
+                                <h3 class="text-xl font-bold mb-2">Sécurité avant tout</h3>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    Nous prenons la sécurité de votre compte très au sérieux. Le lien de réinitialisation sera valide pendant 24 heures.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Confirmation illustration (hidden by default) -->
+                        <div id="confirmation-illustration" class="hidden">
+                            <div class="relative">
+                                <div class="absolute -inset-4 bg-green-500 dark:bg-green-600 rounded-2xl opacity-20 blur-lg"></div>
+                                <img
+                                    src="https://images.unsplash.com/photo-1596524430615-b46475ddff6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                                    alt="Email envoyé"
+                                    class="relative w-full h-auto rounded-xl shadow-lg"
+                                >
+                            </div>
+                            <div class="mt-8 text-center">
+                                <h3 class="text-xl font-bold mb-2">Vérifiez votre boîte de réception</h3>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    Si vous ne trouvez pas notre e-mail, vérifiez votre dossier de spam ou contactez notre support.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Reset password illustration (hidden by default) -->
+                        <div id="reset-illustration" class="hidden">
+                            <div class="relative">
+                                <div class="absolute -inset-4 bg-blue-500 dark:bg-blue-600 rounded-2xl opacity-20 blur-lg"></div>
+                                <img
+                                    src="https://images.unsplash.com/photo-1630555154361-0d9c0611a5d1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                                    alt="Nouveau mot de passe"
+                                    class="relative w-full h-auto rounded-xl shadow-lg"
+                                >
+                            </div>
+                            <div class="mt-8 text-center">
+                                <h3 class="text-xl font-bold mb-2">Créez un mot de passe sécurisé</h3>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    Utilisez au moins 8 caractères avec un mélange de lettres, chiffres et symboles pour une meilleure sécurité.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Success illustration (hidden by default) -->
+                        <div id="success-illustration" class="hidden">
+                            <div class="relative">
+                                <div class="absolute -inset-4 bg-green-500 dark:bg-green-600 rounded-2xl opacity-20 blur-lg"></div>
+                                <img
+                                    src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                                    alt="Mot de passe réinitialisé"
+                                    class="relative w-full h-auto rounded-xl shadow-lg"
+                                >
+                            </div>
+                            <div class="mt-8 text-center">
+                                <h3 class="text-xl font-bold mb-2">Vous êtes prêt !</h3>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    Votre mot de passe a été mis à jour avec succès. Connectez-vous pour accéder à votre compte.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-800 dark:bg-gray-900 text-white py-8">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-pills text-2xl text-primary-light dark:text-primary-dark mr-2"></i>
+                    <span class="text-xl font-bold">Nsoko<span class="text-primary-light dark:text-primary-dark">Pharma</span></span>
+                </div>
+                <p class="text-gray-400">
+                    La solution de gestion pharmaceutique conçue pour les professionnels de santé en RDC.
+                </p>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4">Liens utiles</h3>
+                <ul class="space-y-2">
+                    <li><a href="#support" class="text-gray-400 hover:text-white transition-colors">Support technique</a></li>
+                    <li><a href="#faq" class="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
+                    <li><a href="#documentation" class="text-gray-400 hover:text-white transition-colors">Documentation</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4">Légal</h3>
+                <ul class="space-y-2">
+                    <li><a href="#privacy" class="text-gray-400 hover:text-white transition-colors">Politique de confidentialité</a></li>
+                    <li><a href="#terms" class="text-gray-400 hover:text-white transition-colors">Conditions générales</a></li>
+                    <li><a href="#cookies" class="text-gray-400 hover:text-white transition-colors">Politique des cookies</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2023 NsokoPharma. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Dark mode toggle functionality
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+    darkModeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+    });
+
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.documentElement.classList.add('dark');
+    }
+
+    // Check URL for reset token to determine which view to show
+    function checkResetToken() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const resetToken = urlParams.get('token');
+
+        if (resetToken) {
+            // Show the password reset form
+            document.getElementById('request-reset-view').classList.add('hidden');
+            document.getElementById('reset-password-view').classList.remove('hidden');
+
+            // Update illustration
+            document.getElementById('request-illustration').classList.add('hidden');
+            document.getElementById('reset-illustration').classList.remove('hidden');
+        }
+    }
+
+    // Call this function when page loads
+    checkResetToken();
+
+    // Toggle password visibility
+    function togglePasswordVisibility(inputId) {
+        const input = document.getElementById(inputId);
+        const icon = input.nextElementSibling.querySelector('i');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+
+    // Password strength checker
+    function checkPasswordStrength(password) {
+        let strength = 0;
+
+        // Length check
+        if (password.length >= 8) strength += 1;
+        if (password.length >= 12) strength += 1;
+
+        // Contains numbers
+        if (/\d/.test(password)) strength += 1;
+
+        // Contains lowercase
+        if (/[a-z]/.test(password)) strength += 1;
+
+        // Contains uppercase
+        if (/[A-Z]/.test(password)) strength += 1;
+
+        // Contains special chars
+        if (/[^a-zA-Z0-9]/.test(password)) strength += 1;
+
+        return strength;
+    }
+
+    // Update password strength indicator
+    function updatePasswordStrength() {
+        const password = document.getElementById('new-password').value;
+        const strength = checkPasswordStrength(password);
+        const strengthBar = document.getElementById('password-strength-bar');
+        const strengthText = document.getElementById('password-strength-text');
+
+        let color = 'bg-red-500';
+        let text = 'Faible';
+
+        if (strength >= 4) {
+            color = 'bg-yellow-500';
+            text = 'Moyen';
+        }
+        if (strength >= 6) {
+            color = 'bg-green-500';
+            text = 'Fort';
+        }
+
+        const width = (strength / 6) * 100;
+        strengthBar.className = `password-strength ${color} rounded-full`;
+        strengthBar.style.width = `${width}%`;
+
+        strengthText.textContent = `Sécurité du mot de passe: ${text}`;
+    }
+
+    // Event listeners for password fields
+    document.getElementById('new-password').addEventListener('input', updatePasswordStrength);
+
+    // Form submission handling for request reset
+    document.getElementById('request-reset-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('reset-email').value;
+        const emailError = document.getElementById('email-error');
+
+        // Simple email validation
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            emailError.classList.remove('hidden');
+            return;
+        }
+
+        emailError.classList.add('hidden');
+
+        // Simulate sending reset email (in a real app, this would be an API call)
+        setTimeout(() => {
+            // Hide request form, show confirmation
+            document.getElementById('request-reset-view').classList.add('hidden');
+            document.getElementById('confirmation-view').classList.remove('hidden');
+
+            // Update illustration
+            document.getElementById('request-illustration').classList.add('hidden');
+            document.getElementById('confirmation-illustration').classList.remove('hidden');
+        }, 1000);
+    });
+
+    // Form submission handling for password reset
+    document.getElementById('reset-password-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        const passwordMatchError = document.getElementById('password-match-error');
+
+        // Check if passwords match
+        if (newPassword !== confirmPassword) {
+            passwordMatchError.classList.remove('hidden');
+            return;
+        }
+
+        passwordMatchError.classList.add('hidden');
+
+        // Simulate password reset (in a real app, this would be an API call)
+        setTimeout(() => {
+            // Hide reset form, show success message
+            document.getElementById('reset-password-view').classList.add('hidden');
+            document.getElementById('success-view').classList.remove('hidden');
+
+            // Update illustration
+            document.getElementById('reset-illustration').classList.add('hidden');
+            document.getElementById('success-illustration').classList.remove('hidden');
+        }, 1000);
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute('href');
+            if (targetId !== '#') {
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

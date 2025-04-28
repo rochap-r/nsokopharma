@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimiser la gestion de stock - Blog NsokoPharma</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            light: '#3b82f6',
+                            dark: '#1d4ed8'
+                        },
+                        secondary: {
+                            light: '#10b981',
+                            dark: '#059669'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+        }
+
+        .dark body {
+            background-color: #111827;
+        }
+
+        .article-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .dark .article-content h2 {
+            color: #f3f4f6;
+        }
+
+        .article-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+
+        .dark .article-content h3 {
+            color: #e5e7eb;
+        }
+
+        .article-content p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            color: #4b5563;
+        }
+
+        .dark .article-content p {
+            color: #d1d5db;
+        }
+
+        .article-content ul,
+        .article-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+            color: #4b5563;
+        }
+
+        .dark .article-content li {
+            color: #d1d5db;
+        }
+
+        .article-content a {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+
+        .dark .article-content a {
+            color: #60a5fa;
+        }
+
+        .article-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content th,
+        .article-content td {
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        .dark .article-content th,
+        .dark .article-content td {
+            border-color: #374151;
+        }
+
+        .article-content th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+
+        .dark .article-content th {
+            background-color: #1f2937;
+        }
+
+        .hero-image {
+            height: 400px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-image {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<!-- Header -->
+<header class="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-10">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <i class="fas fa-pills text-2xl text-primary-light dark:text-primary-dark mr-2"></i>
+            <a href="#" class="text-xl font-bold">Nsoko<span class="text-primary-light dark:text-primary-dark">Pharma</span></a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="hidden md:flex items-center space-x-8">
+            <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors">Accueil</a>
+            <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors">Blog</a>
+            <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors">Contact</a>
+
+            <!-- Dark Mode Toggle -->
+            <button id="dark-mode-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 ml-4">
+                <i class="fas fa-moon text-gray-700 dark:hidden"></i>
+                <i class="fas fa-sun text-yellow-300 hidden dark:inline"></i>
+            </button>
+        </nav>
+
+        <!-- Mobile menu button -->
+        <button id="mobile-menu-button" class="md:hidden p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+            <i class="fas fa-bars text-gray-700 dark:text-gray-300"></i>
+        </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 px-4 py-2 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex flex-col space-y-3">
+            <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors py-2">Accueil</a>
+            <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors py-2">Blog</a>
+            <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors py-2">Contact</a>
+
+            <div class="flex justify-center pt-2">
+                <button id="dark-mode-toggle-mobile" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+                    <i class="fas fa-moon text-gray-700 dark:hidden"></i>
+                    <i class="fas fa-sun text-yellow-300 hidden dark:inline"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="flex-grow">
+    <!-- Blog Post Header -->
+    <section class="py-8">
+        <div class="container mx-auto px-4">
+            <!-- Category and date -->
+            <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
+                <span class="px-3 py-1 bg-primary-light dark:bg-primary-dark text-white rounded-full text-xs font-medium">Gestion de pharmacie</span>
+                <span class="mx-2">•</span>
+                <span>Publié le 23 avril 2025 par Dr. Jacques Kabasele</span>
+            </div>
+
+            <!-- Post title -->
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">Optimiser la gestion de stock dans votre pharmacie : stratégies clés</h1>
+
+            <!-- Hero image -->
+            <div class="hero-image w-full rounded-xl overflow-hidden mb-8">
+                <img
+                    src="https://images.unsplash.com/photo-1631815588090-6d6a0a22680f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                    alt="Organisation des médicaments en pharmacie"
+                    class="w-full h-full object-cover"
+                >
+            </div>
+        </div>
+    </section>
+
+    <!-- Article Content -->
+    <section class="py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row gap-12">
+                <!-- Main content -->
+                <article class="lg:w-2/3">
+                    <div class="article-content bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 md:p-8">
+                        <p class="text-lg font-medium mb-6">Une gestion efficace des stocks est cruciale pour le succès de toute pharmacie. Dans cet article, nous explorons des stratégies pratiques pour optimiser votre inventaire, réduire les pertes et améliorer votre rentabilité.</p>
+
+                        <h2>1. L'importance d'une bonne gestion de stock</h2>
+                        <p>Une gestion optimale des stocks permet de :</p>
+                        <ul class="list-disc pl-6 mb-6">
+                            <li>Minimiser les ruptures de stock</li>
+                            <li>Réduire les médicaments périmés</li>
+                            <li>Optimiser votre trésorerie</li>
+                            <li>Améliorer la satisfaction client</li>
+                        </ul>
+
+                        <h2>2. Méthodes d'organisation des médicaments</h2>
+                        <h3>2.1. Classement par catégories</h3>
+                        <p>Organisez vos médicaments selon :</p>
+                        <ul class="list-disc pl-6 mb-6">
+                            <li>Type thérapeutique (antibiotiques, antalgiques, etc.)</li>
+                            <li>Fréquence de vente</li>
+                            <li>Conditions de conservation</li>
+                        </ul>
+
+                        <h3>2.2. Utilisation du système FIFO</h3>
+                        <p>Le principe "First In, First Out" (premier entré, premier sorti) est essentiel pour :</p>
+                        <ul class="list-disc pl-6 mb-6">
+                            <li>Réduire les pertes dues aux péremptions</li>
+                            <li>Garantir la fraîcheur des produits</li>
+                        </ul>
+
+                        <h2>3. Outils technologiques pour le suivi</h2>
+                        <p>NsokoPharma propose des fonctionnalités avancées pour :</p>
+                        <table class="mb-6">
+                            <thead>
+                            <tr>
+                                <th>Fonctionnalité</th>
+                                <th>Bénéfice</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Alertes de péremption</td>
+                                <td>Notifications automatiques pour les produits approchant de leur date d'expiration</td>
+                            </tr>
+                            <tr>
+                                <td>Analyse des ventes</td>
+                                <td>Identification des tendances pour une meilleure anticipation des besoins</td>
+                            </tr>
+                            <tr>
+                                <td>Gestion des commandes</td>
+                                <td>Automatisation des réapprovisionnements</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <h2>4. Étude de cas : Pharmacie du Progrès à Kolwezi</h2>
+                        <p>La Pharmacie du Progrès a réduit ses pertes de 40% en :</p>
+                        <ul class="list-disc pl-6 mb-6">
+                            <li>Formant son personnel aux bonnes pratiques</li>
+                            <li>Implémentant un système de gestion informatisé</li>
+                            <li>Réorganisant son espace de stockage</li>
+                        </ul>
+
+                        <h2>5. Conclusion</h2>
+                        <p>Une gestion optimale des stocks est un levier essentiel pour la rentabilité de votre pharmacie. En combinant bonnes pratiques et outils technologiques comme NsokoPharma, vous pouvez transformer cette contrainte en avantage compétitif.</p>
+                    </div>
+
+                    <!-- Author Bio -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mt-8 flex items-start">
+                        <div class="flex-shrink-0 mr-4">
+                            <img
+                                src="https://randomuser.me/api/portraits/men/32.jpg"
+                                alt="Photo de Dr. Jacques Kabasele"
+                                class="w-16 h-16 rounded-full"
+                            >
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">Dr. Jacques Kabasele</h3>
+                            <p class="text-gray-600 dark:text-gray-300 mb-2">Pharmacien consultant avec 15 ans d'expérience en gestion pharmaceutique en RDC. Expert en optimisation des processus pour les pharmacies de taille moyenne.</p>
+                            <div class="flex space-x-4">
+                                <a href="#" class="text-primary-light dark:text-primary-dark hover:underline">Plus d'articles</a>
+                                <a href="#" class="text-primary-light dark:text-primary-dark hover:underline">Contacter</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mt-8">
+                        <h3 class="text-xl font-bold mb-6 flex items-center">
+                            <i class="fas fa-comments text-primary-light dark:text-primary-dark mr-2"></i>
+                            Commentaires (3)
+                        </h3>
+
+                        <!-- Comment form -->
+                        <div class="mb-8">
+                            <h4 class="font-medium mb-4">Laisser un commentaire</h4>
+                            <form>
+                                <div class="mb-4">
+                                        <textarea
+                                            placeholder="Votre commentaire..."
+                                            class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700"
+                                            rows="4"
+                                        ></textarea>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button type="submit" class="px-6 py-2 bg-primary-light dark:bg-primary-dark text-white rounded-lg hover:bg-primary-dark dark:hover:bg-primary-light transition-colors">
+                                        Publier
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Comments list -->
+                        <div class="space-y-6">
+                            <!-- Comment 1 -->
+                            <div class="flex">
+                                <div class="flex-shrink-0 mr-4">
+                                    <img
+                                        src="https://randomuser.me/api/portraits/women/44.jpg"
+                                        alt="Photo de Marie L."
+                                        class="w-10 h-10 rounded-full"
+                                    >
+                                </div>
+                                <div>
+                                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                        <div class="flex items-center mb-2">
+                                            <span class="font-medium mr-2">Marie L.</span>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">25 avril 2025</span>
+                                        </div>
+                                        <p>Article très utile ! Nous avons commencé à appliquer certaines de ces stratégies dans notre pharmacie à Lubumbashi et voyons déjà des améliorations.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Comment 2 -->
+                            <div class="flex">
+                                <div class="flex-shrink-0 mr-4">
+                                    <img
+                                        src="https://randomuser.me/api/portraits/men/22.jpg"
+                                        alt="Photo de Dr. Samuel M."
+                                        class="w-10 h-10 rounded-full"
+                                    >
+                                </div>
+                                <div>
+                                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                        <div class="flex items-center mb-2">
+                                            <span class="font-medium mr-2">Dr. Samuel M.</span>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">24 avril 2025</span>
+                                        </div>
+                                        <p>Pourriez-vous approfondir la partie sur l'intégration avec les fournisseurs ? Je trouve que c'est un point crucial pour les pharmacies en milieu rural.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Sidebar -->
+                <aside class="lg:w-1/3">
+                    <!-- Share buttons -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8">
+                        <h3 class="text-lg font-bold mb-4 flex items-center">
+                            <i class="fas fa-share-alt text-primary-light dark:text-primary-dark mr-2"></i>
+                            Partager cet article
+                        </h3>
+                        <div class="flex space-x-3">
+                            <a href="#" class="w-10 h-10 flex items-center justify-center bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 flex items-center justify-center bg-blue-400 text-white rounded-full hover:bg-blue-500 transition-colors">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 flex items-center justify-center bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-700 text-white rounded-full hover:bg-gray-800 transition-colors">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Related articles -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+                        <h3 class="text-lg font-bold mb-4 flex items-center">
+                            <i class="fas fa-book-open text-primary-light dark:text-primary-dark mr-2"></i>
+                            Articles similaires
+                        </h3>
+                        <div class="space-y-4">
+                            <a href="#" class="flex items-start group">
+                                <div class="flex-shrink-0 w-16 h-16 overflow-hidden rounded-md mr-3">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1587854692152-e06df0b8e149?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80"
+                                        alt="Article similaire"
+                                        class="w-full h-full object-cover"
+                                    >
+                                </div>
+                                <div>
+                                    <h4 class="font-medium group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">10 astuces pour améliorer l'accueil des clients</h4>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">15 juin 2023</p>
+                                </div>
+                            </a>
+                            <a href="#" class="flex items-start group">
+                                <div class="flex-shrink-0 w-16 h-16 overflow-hidden rounded-md mr-3">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80"
+                                        alt="Article similaire"
+                                        class="w-full h-full object-cover"
+                                    >
+                                </div>
+                                <div>
+                                    <h4 class="font-medium group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">Comment augmenter vos marges bénéficiaires</h4>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">12 mai 2023</p>
+                                </div>
+                            </a>
+                            <a href="#" class="flex items-start group">
+                                <div class="flex-shrink-0 w-16 h-16 overflow-hidden rounded-md mr-3">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80"
+                                        alt="Article similaire"
+                                        class="w-full h-full object-cover"
+                                    >
+                                </div>
+                                <div>
+                                    <h4 class="font-medium group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">Formation continue pour pharmaciens en RDC</h4>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">28 avril 2023</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-4">Découvrez comment NsokoPharma peut transformer votre pharmacie</h2>
+                <p class="text-xl mb-8 opacity-90">
+                    Essayez gratuitement dès aujourd'hui et bénéficiez d'une gestion optimale de votre stock, de vos ventes et de votre relation client.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#" class="px-8 py-3 bg-white text-primary-light dark:text-primary-dark font-bold rounded-full hover:bg-gray-100 transition-colors shadow-md">
+                        Essai gratuit
+                    </a>
+                    <a href="#" class="px-8 py-3 border-2 border-white text-white font-bold rounded-full hover:bg-white hover:bg-opacity-10 transition-colors">
+                        En savoir plus
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-800 dark:bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-pills text-2xl text-primary-light dark:text-primary-dark mr-2"></i>
+                    <span class="text-xl font-bold">Nsoko<span class="text-primary-light dark:text-primary-dark">Pharma</span></span>
+                </div>
+                <p class="text-gray-400 mb-4">
+                    La solution pharmaceutique conçue spécifiquement pour les besoins des pharmaciens en RDC.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4">Navigation</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Accueil</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Fonctionnalités</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Tarifs</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4">Ressources</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Documentation</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Centre d'aide</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Formations</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Témoignages</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4">Légal</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Politique de confidentialité</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Conditions générales</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Mentions légales</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">CGV</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2025 NsokoPharma. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Dark mode toggle functionality
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const darkModeToggleMobile = document.getElementById('dark-mode-toggle-mobile');
+
+    function toggleDarkMode() {
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+    }
+
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+    darkModeToggleMobile.addEventListener('click', toggleDarkMode);
+
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.documentElement.classList.add('dark');
+    }
+
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute('href');
+            if (targetId !== '#') {
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+
+                    // Close mobile menu if open
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            }
+        });
+    });
+
+    // Simulate comment submission
+    const commentForm = document.querySelector('.comments-section form');
+    if (commentForm) {
+        commentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const textarea = this.querySelector('textarea');
+            if (textarea.value.trim()) {
+                alert('Merci pour votre commentaire ! Il sera visible après modération.');
+                textarea.value = '';
+            }
+        });
+    }
+</script>
+</body>
+</html>

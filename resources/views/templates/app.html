@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NsokoPharma - Tableau de bord</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            light: '#3b82f6',
+                            dark: '#1d4ed8'
+                        },
+                        secondary: {
+                            light: '#10b981',
+                            dark: '#059669'
+                        },
+                        danger: {
+                            light: '#ef4444',
+                            dark: '#dc2626'
+                        },
+                        warning: {
+                            light: '#f59e0b',
+                            dark: '#d97706'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .dark body {
+            background-color: #111827;
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-collapsed {
+            width: 5rem;
+        }
+
+        .sidebar-collapsed .nav-text {
+            display: none;
+        }
+
+        .sidebar-collapsed .logo-text {
+            display: none;
+        }
+
+        .sidebar-collapsed .search-bar {
+            display: none;
+        }
+
+        .main-content {
+            transition: margin-left 0.3s ease;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .card-hover:hover {
+            box-shadow: 0 10px 15px -3px rgba(255, 255, 255, 0.1), 0 4px 6px -2px rgba(255, 255, 255, 0.05);
+        }
+
+        /* Animation for alerts */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .dark ::-webkit-scrollbar-track {
+            background: #374151;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<!-- Sidebar -->
+<!--flux sidebar-->
+<flux:sidebar sticky stashable class="border-r border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+    <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
+
+    <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+        <x-app-logo />
+    </a>
+
+    <flux:navlist variant="outline">
+        <flux:navlist.group :heading="__('Platform')" class="grid">
+            <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+        </flux:navlist.group>
+    </flux:navlist>
+
+    <flux:spacer />
+
+    <flux:navlist variant="outline">
+        <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
+            {{ __('Repository') }}
+        </flux:navlist.item>
+
+        <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits" target="_blank">
+            {{ __('Documentation') }}
+        </flux:navlist.item>
+    </flux:navlist>
+
+    <!-- Desktop User Menu -->
+    <flux:dropdown position="bottom" align="start">
+        <flux:profile
+            :name="auth()->user()->name"
+            :initials="auth()->user()->initials()"
+            icon-trailing="chevrons-up-down"
+        />
+
+        <flux:menu class="w-[220px]">
+            <flux:menu.radio.group>
+                <div class="p-0 text-sm font-normal">
+                    <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
+                                <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
+                                    <span
+                                        class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white"
+                                    >
+                                        {{ auth()->user()->initials() }}
+                                    </span>
+                                </span>
+
+                        <div class="grid flex-1 text-start text-sm leading-tight">
+                            <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
+                            <span class="truncate text-xs">{{ auth()->user()->email }}</span>
+                        </div>
+                    </div>
+                </div>
+            </flux:menu.radio.group>
+
+            <flux:menu.separator />
+            @cannot('view-roles')
+            <flux:menu.radio.group>
+                <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+            </flux:menu.radio.group>
+            @endcan
+            <flux:menu.separator />
+
+            <form method="POST" action="{{ route('logout') }}" class="w-full">
+                @csrf
+                <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
+                    {{ __('Log Out') }}
+                </flux:menu.item>
+            </form>
+        </flux:menu>
+    </flux:dropdown>
+</flux:sidebar>
+
+<!-- Mobile User Menu -->
+<flux:header class="lg:hidden">
+    <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+
+    <flux:spacer />
+
+    <flux:dropdown position="top" align="end">
+        <flux:profile
+            :initials="auth()->user()->initials()"
+            icon-trailing="chevron-down"
+        />
+
+        <flux:menu>
+            <flux:menu.radio.group>
+                <div class="p-0 text-sm font-normal">
+                    <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
+                                <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
+                                    <span
+                                        class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white"
+                                    >
+                                        {{ auth()->user()->initials() }}
+                                    </span>
+                                </span>
+
+                        <div class="grid flex-1 text-start text-sm leading-tight">
+                            <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
+                            <span class="truncate text-xs">{{ auth()->user()->email }}</span>
+                        </div>
+                    </div>
+                </div>
+            </flux:menu.radio.group>
+
+            <flux:menu.separator />
+
+            <flux:menu.radio.group>
+                <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+            </flux:menu.radio.group>
+
+            <flux:menu.separator />
+
+            <form method="POST" action="{{ route('logout') }}" class="w-full">
+                @csrf
+                <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
+                    {{ __('Log Out') }}
+                </flux:menu.item>
+            </form>
+        </flux:menu>
+    </flux:dropdown>
+</flux:header>
+<!--en flux sidebar-->
+
+<!-- Main Content -->
+<div id="main-content" class="main-content ml-64 transition-all duration-300">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-40">
+        <div class="flex items-center justify-between px-6 py-4">
+            <!-- Page Title -->
+            <h1 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Tableau de bord</h1>
+
+            <!-- Header Right Section -->
+            <div class="flex items-center space-x-4">
+                <!-- Dark Mode Toggle -->
+                <button id="dark-mode-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+                    <i class="fas fa-moon text-gray-700 dark:hidden"></i>
+                    <i class="fas fa-sun text-yellow-300 hidden dark:inline"></i>
+                </button>
+
+                <!-- Notifications -->
+                <div class="relative">
+                    <button id="notification-btn" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600">
+                        <i class="fas fa-bell"></i>
+                        <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                    </button>
+
+                    <!-- Notification Dropdown -->
+                    <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-md shadow-lg overflow-hidden z-50">
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Notifications</h3>
+                        </div>
+                        <div class="max-h-96 overflow-y-auto">
+                            <!-- Notification Items -->
+                            <a href="#" class="block px-4 py-3 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 pt-0.5">
+                                        <div class="h-10 w-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                                            <i class="fas fa-exclamation-circle text-red-500 dark:text-red-400"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-3 flex-1">
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white">5 produits en rupture de stock</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Il y a 10 minutes</p>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="#" class="block px-4 py-3 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 pt-0.5">
+                                        <div class="h-10 w-10 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+                                            <i class="fas fa-exclamation-triangle text-yellow-500 dark:text-yellow-400"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-3 flex-1">
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white">3 produits proches de péremption</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Il y a 1 heure</p>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="#" class="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 pt-0.5">
+                                        <div class="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                            <i class="fas fa-check-circle text-green-500 dark:text-green-400"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-3 flex-1">
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white">Rapport hebdomadaire disponible</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Aujourd'hui, 09:30</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="p-3 bg-gray-50 dark:bg-gray-700 text-center">
+                            <a href="#" class="text-sm font-medium text-primary-light dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary-light">
+                                Voir toutes les notifications
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Profile Dropdown -->
+                <div class="relative">
+                    <button id="user-menu-btn" class="flex items-center space-x-2 focus:outline-none">
+                        <div class="h-8 w-8 rounded-full bg-primary-light dark:bg-primary-dark flex items-center justify-center text-white">
+                            <span>JP</span>
+                        </div>
+                        <span class="hidden md:inline text-sm font-medium text-gray-700 dark:text-gray-300">Jean Paul</span>
+                        <i class="fas fa-chevron-down text-xs text-gray-500 dark:text-gray-400"></i>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div id="user-menu-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg overflow-hidden z-50">
+                        <div class="py-1">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-user mr-2"></i> Profil
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-exchange-alt mr-2"></i> Changer de tenant
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <main class="p-6">
+        <!-- Alerts Section -->
+        <div class="mb-6 space-y-3">
+            <div class="bg-red-50 dark:bg-red-900/10 border-l-4 border-red-500 dark:border-red-400 p-4 fade-in">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-circle h-5 w-5 text-red-500 dark:text-red-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-red-700 dark:text-red-300">
+                            <span class="font-semibold">Attention:</span> 5 produits sont en rupture de stock. <a href="#" class="font-medium underline text-red-600 dark:text-red-400 hover:text-red-500 dark:hover:text-red-300">Approvisionner maintenant</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 dark:bg-yellow-900/10 border-l-4 border-yellow-500 dark:border-yellow-400 p-4 fade-in">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle h-5 w-5 text-yellow-500 dark:text-yellow-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-700 dark:text-yellow-300">
+                            <span class="font-semibold">Alerte:</span> 3 produits approchent de leur date de péremption. <a href="#" class="font-medium underline text-yellow-600 dark:text-yellow-400 hover:text-yellow-500 dark:hover:text-yellow-300">Voir les détails</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Overview Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <!-- Total Sales Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm card-hover">
+                <div class="p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ventes aujourd'hui</p>
+                            <p class="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">$1,245.00</p>
+                            <p class="mt-1 text-sm text-green-600 dark:text-green-400">
+                                <span class="font-semibold">+12%</span> vs hier
+                            </p>
+                        </div>
+                        <div class="h-12 w-12 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                            <i class="fas fa-shopping-cart text-green-600 dark:text-green-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products in Stock Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm card-hover">
+                <div class="p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Produits en stock</p>
+                            <p class="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">342</p>
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                <span class="font-semibold">5 en rupture</span>
+                            </p>
+                        </div>
+                        <div class="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
+                            <i class="fas fa-pills text-blue-600 dark:text-blue-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expiring Products Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm card-hover">
+                <div class="p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Produits expirant</p>
+                            <p class="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">8</p>
+                            <p class="mt-1 text-sm text-yellow-600 dark:text-yellow-400">
+                                <span class="font-semibold">3 cette semaine</span>
+                            </p>
+                        </div>
+                        <div class="h-12 w-12 rounded-full bg-yellow-100 dark:bg-yellow-900/20 flex items-center justify-center">
+                            <i class="fas fa-hourglass-half text-yellow-600 dark:text-yellow-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Visits Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm card-hover">
+                <div class="p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Clients aujourd'hui</p>
+                            <p class="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">42</p>
+                            <p class="mt-1 text-sm text-green-600 dark:text-green-400">
+                                <span class="font-semibold">+5%</span> vs hier
+                            </p>
+                        </div>
+                        <div class="h-12 w-12 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
+                            <i class="fas fa-users text-purple-600 dark:text-purple-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts and Tables Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Sales Chart -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Tendances des ventes</h2>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 text-xs font-medium rounded-md bg-primary-light dark:bg-primary-dark text-white">
+                            Ce mois
+                        </button>
+                        <button class="px-3 py-1 text-xs font-medium rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                            Cette semaine
+                        </button>
+                        <button class="px-3 py-1 text-xs font-medium rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                            Aujourd'hui
+                        </button>
+                    </div>
+                </div>
+                <div class="h-80">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Top Selling Products -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Produits les plus vendus</h2>
+                    <a href="#" class="text-sm font-medium text-primary-light dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary-light">
+                        Voir tout
+                    </a>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Produit</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Catégorie</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ventes</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Stock</th>
+                        </tr>
+                        </thead>
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <i class="fas fa-pills text-blue-500 text-xl"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white">Paracétamol 500mg</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Antidouleur</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-white">156</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
+                                            42 en stock
+                                        </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <i class="fas fa-pills text-purple-500 text-xl"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white">Amoxicilline 250mg</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Antibiotique</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-white">98</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200">
+                                            12 en stock
+                                        </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <i class="fas fa-pills text-green-500 text-xl"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white">Vitamine C 100mg</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Vitamine</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-white">87</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200">
+                                            Rupture
+                                        </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Overview Section -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Aperçu du stock</h2>
+                <div class="flex space-x-2">
+                    <button class="px-3 py-1 text-xs font-medium rounded-md bg-primary-light dark:bg-primary-dark text-white">
+                        Tous
+                    </button>
+                    <button class="px-3 py-1 text-xs font-medium rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                        Faible stock
+                    </button>
+                    <button class="px-3 py-1 text-xs font-medium rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                        Proche péremption
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nom du produit</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Catégorie</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Stock actuel</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date de péremption</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Statut</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <i class="fas fa-pills text-blue-500 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900 dark:text-white">Paracétamol 500mg</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">PHA-001</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Antidouleur</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900 dark:text-white">42</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500 dark:text-gray-400">15/12/2023</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
+                                        Bon
+                                    </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <button class="text-primary-light dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary-light mr-3">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <i class="fas fa-pills text-purple-500 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900 dark:text-white">Amoxicilline 250mg</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">PHA-002</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Antibiotique</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900 dark:text-white">12</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500 dark:text-gray-400">30/11/2023</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200">
+                                        Faible
+                                    </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <button class="text-primary-light dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary-light mr-3">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <i class="fas fa-pills text-red-500 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900 dark:text-white">Vitamine C 100mg</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">PHA-003</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Vitamine</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900 dark:text-white">0</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500 dark:text-gray-400">15/01/2024</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200">
+                                        Rupture
+                                    </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <button class="text-primary-light dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary-light mr-3">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tenant Information Section -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Informations du tenant</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Détails de la pharmacie</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom de la pharmacie</label>
+                            <p class="text-sm text-gray-900 dark:text-white">Pharmacie du Peuple</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Adresse</label>
+                            <p class="text-sm text-gray-900 dark:text-white">123 Avenue Lumumba, Kolwezi, RDC</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Téléphone</label>
+                            <p class="text-sm text-gray-900 dark:text-white">+243 81 234 5678</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Gestion des utilisateurs</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Utilisateurs actifs</label>
+                            <p class="text-sm text-gray-900 dark:text-white">3/5</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Dernière connexion</label>
+                            <p class="text-sm text-gray-900 dark:text-white">Aujourd'hui, 10:45</p>
+                        </div>
+                        <div>
+                            <button class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light focus:outline-none">
+                                <i class="fas fa-user-plus mr-1"></i> Ajouter un utilisateur
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-6">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        &copy; 2023 NsokoPharma. Tous droits réservés.
+                    </p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Politique de confidentialité</a>
+                    <a href="#" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Conditions générales</a>
+                    <a href="#" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+</body>
+</html>

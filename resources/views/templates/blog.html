@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog NsokoPharma - Conseils pour pharmaciens en RDC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            light: '#3b82f6',
+                            dark: '#1d4ed8'
+                        },
+                        secondary: {
+                            light: '#10b981',
+                            dark: '#059669'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+        }
+
+        .dark body {
+            background-color: #111827;
+        }
+
+        .blog-card {
+            transition: all 0.3s ease;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .blog-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(255, 255, 255, 0.1), 0 4px 6px -2px rgba(255, 255, 255, 0.05);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+        }
+
+        .dark .hero-section {
+            background: linear-gradient(135deg, rgba(29, 78, 216, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+        }
+
+        .cta-banner {
+            background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+        }
+
+        .dark .cta-banner {
+            background: linear-gradient(135deg, #1d4ed8 0%, #059669 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<!-- Header -->
+<header class="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-10">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <i class="fas fa-pills text-2xl text-primary-light dark:text-primary-dark mr-2"></i>
+            <a href="#" class="text-xl font-bold">Nsoko<span class="text-primary-light dark:text-primary-dark">Pharma</span></a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="hidden md:flex items-center space-x-8">
+            <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors">Accueil</a>
+            <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors">À propos</a>
+            <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors">Contact</a>
+            <a href="#" class="font-medium text-primary-light dark:text-primary-dark">Blog</a>
+
+            <!-- Dark Mode Toggle -->
+            <button id="dark-mode-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 ml-4">
+                <i class="fas fa-moon text-gray-700 dark:hidden"></i>
+                <i class="fas fa-sun text-yellow-300 hidden dark:inline"></i>
+            </button>
+        </nav>
+
+        <!-- Mobile menu button -->
+        <button id="mobile-menu-button" class="md:hidden p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+            <i class="fas fa-bars text-gray-700 dark:text-gray-300"></i>
+        </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 px-4 py-2 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex flex-col space-y-3">
+            <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors py-2">Accueil</a>
+            <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors py-2">À propos</a>
+            <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors py-2">Contact</a>
+            <a href="#" class="font-medium text-primary-light dark:text-primary-dark py-2">Blog</a>
+
+            <div class="flex justify-center pt-2">
+                <button id="dark-mode-toggle-mobile" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+                    <i class="fas fa-moon text-gray-700 dark:hidden"></i>
+                    <i class="fas fa-sun text-yellow-300 hidden dark:inline"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="flex-grow">
+    <!-- Hero Section -->
+    <section class="hero-section py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">Découvrez nos derniers articles</h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+                    Conseils pratiques, mises à jour et analyses pour aider les pharmaciens de Kolwezi et de la RDC à optimiser leur gestion quotidienne.
+                </p>
+
+                <!-- Search Bar -->
+                <div class="max-w-2xl mx-auto relative">
+                    <input
+                        type="text"
+                        placeholder="Rechercher un article..."
+                        class="w-full px-6 py-4 rounded-full border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700 shadow-sm"
+                    >
+                    <button class="absolute right-2 top-2 bg-primary-light dark:bg-primary-dark text-white p-2 rounded-full hover:bg-primary-dark dark:hover:bg-primary-light transition-colors">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Content -->
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Main Blog Posts -->
+                <div class="lg:w-2/3">
+                    <!-- Filter Options -->
+                    <div class="flex flex-wrap gap-2 mb-8">
+                        <button class="px-4 py-2 bg-primary-light dark:bg-primary-dark text-white rounded-full text-sm font-medium">Tous les articles</button>
+                        <button class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Gestion de pharmacie</button>
+                        <button class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Rapports et analyses</button>
+                        <button class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Conseils pratiques</button>
+                        <button class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Actualités</button>
+                    </div>
+
+                    <!-- Blog Posts Grid -->
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Blog Post 1 -->
+                        <article class="blog-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md">
+                            <div class="h-48 overflow-hidden">
+                                <img
+                                    src="https://images.unsplash.com/photo-1587854692152-e06df0b8e149?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                                    alt="Pharmacien en train de conseiller un client"
+                                    class="w-full h-full object-cover"
+                                >
+                            </div>
+                            <div class="p-6">
+                                <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
+                                    <span>Gestion de pharmacie</span>
+                                    <span class="mx-2">•</span>
+                                    <span>15 juin 2023</span>
+                                </div>
+                                <h2 class="text-xl font-bold mb-3">10 astuces pour améliorer l'accueil des clients dans votre pharmacie</h2>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    Découvrez comment créer une expérience client mémorable qui fidélisera votre clientèle et augmentera vos ventes.
+                                </p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center">
+                                        <img
+                                            src="https://randomuser.me/api/portraits/women/42.jpg"
+                                            alt="Auteur"
+                                            class="w-8 h-8 rounded-full mr-2"
+                                        >
+                                        <span class="text-sm">Dr. Sarah Mbuyi</span>
+                                    </div>
+                                    <a href="#" class="text-primary-light dark:text-primary-dark font-medium hover:underline">Lire la suite</a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Blog Post 2 -->
+                        <article class="blog-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md">
+                            <div class="h-48 overflow-hidden">
+                                <img
+                                    src="https://images.unsplash.com/photo-1631815588090-6d6a0a22680f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                                    alt="Organisation des médicaments"
+                                    class="w-full h-full object-cover"
+                                >
+                            </div>
+                            <div class="p-6">
+                                <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
+                                    <span>Conseils pratiques</span>
+                                    <span class="mx-2">•</span>
+                                    <span>8 juin 2023</span>
+                                </div>
+                                <h2 class="text-xl font-bold mb-3">Optimiser l'organisation de votre stock de médicaments</h2>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    Méthodes éprouvées pour gérer efficacement votre inventaire et réduire les pertes de produits périmés.
+                                </p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center">
+                                        <img
+                                            src="https://randomuser.me/api/portraits/men/32.jpg"
+                                            alt="Auteur"
+                                            class="w-8 h-8 rounded-full mr-2"
+                                        >
+                                        <span class="text-sm">Dr. Jacques Kabasele</span>
+                                    </div>
+                                    <a href="#" class="text-primary-light dark:text-primary-dark font-medium hover:underline">Lire la suite</a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Blog Post 3 -->
+                        <article class="blog-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md">
+                            <div class="h-48 overflow-hidden">
+                                <img
+                                    src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                                    alt="Analyse de données"
+                                    class="w-full h-full object-cover"
+                                >
+                            </div>
+                            <div class="p-6">
+                                <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
+                                    <span>Rapports et analyses</span>
+                                    <span class="mx-2">•</span>
+                                    <span>1 juin 2023</span>
+                                </div>
+                                <h2 class="text-xl font-bold mb-3">Analyse des tendances d'achat en pharmacie en RDC pour 2023</h2>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    Décryptage des données de consommation pharmaceutique dans les principales villes congolaises.
+                                </p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center">
+                                        <img
+                                            src="https://randomuser.me/api/portraits/women/65.jpg"
+                                            alt="Auteur"
+                                            class="w-8 h-8 rounded-full mr-2"
+                                        >
+                                        <span class="text-sm">Dr. Amina Ngalula</span>
+                                    </div>
+                                    <a href="#" class="text-primary-light dark:text-primary-dark font-medium hover:underline">Lire la suite</a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Blog Post 4 -->
+                        <article class="blog-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md">
+                            <div class="h-48 overflow-hidden">
+                                <img
+                                    src="https://images.unsplash.com/photo-1581093450021-4a7360e5f3af?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                                    alt="Technologie en pharmacie"
+                                    class="w-full h-full object-cover"
+                                >
+                            </div>
+                            <div class="p-6">
+                                <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
+                                    <span>Actualités</span>
+                                    <span class="mx-2">•</span>
+                                    <span>25 mai 2023</span>
+                                </div>
+                                <h2 class="text-xl font-bold mb-3">Les nouvelles réglementations pharmaceutiques en RDC : ce qui change</h2>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    Mise à jour complète sur les dernières modifications législatives et leurs implications pour votre pharmacie.
+                                </p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center">
+                                        <img
+                                            src="https://randomuser.me/api/portraits/men/75.jpg"
+                                            alt="Auteur"
+                                            class="w-8 h-8 rounded-full mr-2"
+                                        >
+                                        <span class="text-sm">Dr. Patrick Tshibangu</span>
+                                    </div>
+                                    <a href="#" class="text-primary-light dark:text-primary-dark font-medium hover:underline">Lire la suite</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="flex justify-center mt-12">
+                        <nav class="flex items-center space-x-2">
+                            <button class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="px-4 py-2 bg-primary-light dark:bg-primary-dark text-white rounded-md font-medium">1</button>
+                            <button class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">2</button>
+                            <button class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">3</button>
+                            <span class="px-2 text-gray-500">...</span>
+                            <button class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">8</button>
+                            <button class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="lg:w-1/3">
+                    <!-- About Widget -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8">
+                        <h3 class="text-lg font-bold mb-4 flex items-center">
+                            <i class="fas fa-info-circle text-primary-light dark:text-primary-dark mr-2"></i>
+                            À propos du blog
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            Le blog NsokoPharma fournit des conseils pratiques et des analyses pour aider les pharmaciens de la RDC à optimiser leur gestion quotidienne et développer leur activité.
+                        </p>
+                        <div class="flex space-x-3">
+                            <a href="#" class="text-primary-light dark:text-primary-dark hover:underline">En savoir plus</a>
+                            <a href="#" class="text-primary-light dark:text-primary-dark hover:underline">Notre équipe</a>
+                        </div>
+                    </div>
+
+                    <!-- Popular Posts -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8">
+                        <h3 class="text-lg font-bold mb-4 flex items-center">
+                            <i class="fas fa-fire text-primary-light dark:text-primary-dark mr-2"></i>
+                            Articles populaires
+                        </h3>
+                        <div class="space-y-4">
+                            <a href="#" class="flex items-start group">
+                                <div class="flex-shrink-0 w-16 h-16 overflow-hidden rounded-md mr-3">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80"
+                                        alt="Article populaire"
+                                        class="w-full h-full object-cover"
+                                    >
+                                </div>
+                                <div>
+                                    <h4 class="font-medium group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">Comment augmenter vos marges bénéficiaires en pharmacie</h4>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">12 mai 2023</p>
+                                </div>
+                            </a>
+                            <a href="#" class="flex items-start group">
+                                <div class="flex-shrink-0 w-16 h-16 overflow-hidden rounded-md mr-3">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1551601651-bc60f254d532?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80"
+                                        alt="Article populaire"
+                                        class="w-full h-full object-cover"
+                                    >
+                                </div>
+                                <div>
+                                    <h4 class="font-medium group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">Gestion des médicaments périmés : procédures à suivre</h4>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">5 mai 2023</p>
+                                </div>
+                            </a>
+                            <a href="#" class="flex items-start group">
+                                <div class="flex-shrink-0 w-16 h-16 overflow-hidden rounded-md mr-3">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80"
+                                        alt="Article populaire"
+                                        class="w-full h-full object-cover"
+                                    >
+                                </div>
+                                <div>
+                                    <h4 class="font-medium group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">Formation continue pour pharmaciens en RDC : options disponibles</h4>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">28 avril 2023</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+                        <h3 class="text-lg font-bold mb-4 flex items-center">
+                            <i class="fas fa-tags text-primary-light dark:text-primary-dark mr-2"></i>
+                            Catégories
+                        </h3>
+                        <div class="space-y-2">
+                            <a href="#" class="flex items-center justify-between group">
+                                <span class="group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">Gestion de pharmacie</span>
+                                <span class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-medium px-2 py-0.5 rounded">24</span>
+                            </a>
+                            <a href="#" class="flex items-center justify-between group">
+                                <span class="group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">Rapports et analyses</span>
+                                <span class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-medium px-2 py-0.5 rounded">15</span>
+                            </a>
+                            <a href="#" class="flex items-center justify-between group">
+                                <span class="group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">Conseils pratiques</span>
+                                <span class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-medium px-2 py-0.5 rounded">32</span>
+                            </a>
+                            <a href="#" class="flex items-center justify-between group">
+                                <span class="group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">Actualités</span>
+                                <span class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-medium px-2 py-0.5 rounded">18</span>
+                            </a>
+                            <a href="#" class="flex items-center justify-between group">
+                                <span class="group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">Technologie</span>
+                                <span class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-medium px-2 py-0.5 rounded">9</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="cta-banner text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-4">Restez informé ! Abonnez-vous à notre blog</h2>
+                <p class="text-xl mb-8 opacity-90">
+                    Recevez nos derniers articles directement dans votre boîte email et ne manquez aucun conseil pratique pour votre pharmacie.
+                </p>
+                <div class="max-w-lg mx-auto flex flex-col sm:flex-row gap-4">
+                    <input
+                        type="email"
+                        placeholder="Votre adresse email"
+                        class="flex-grow px-6 py-3 rounded-full border border-transparent focus:outline-none focus:ring-2 focus:ring-white text-gray-900"
+                    >
+                    <button class="px-8 py-3 bg-white text-primary-light dark:text-primary-dark font-bold rounded-full hover:bg-gray-100 transition-colors shadow-md">
+                        S'abonner
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-800 dark:bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-pills text-2xl text-primary-light dark:text-primary-dark mr-2"></i>
+                    <span class="text-xl font-bold">Nsoko<span class="text-primary-light dark:text-primary-dark">Pharma</span></span>
+                </div>
+                <p class="text-gray-400 mb-4">
+                    La solution pharmaceutique conçue spécifiquement pour les besoins des pharmaciens en RDC.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4">Liens rapides</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Accueil</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">À propos</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Fonctionnalités</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Tarifs</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4">Ressources</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Centre d'aide</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Documentation</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Formations</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Témoignages</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4">Légal</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Politique de confidentialité</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Conditions générales</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Politique des cookies</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Mentions légales</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2023 NsokoPharma. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Dark mode toggle functionality
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const darkModeToggleMobile = document.getElementById('dark-mode-toggle-mobile');
+
+    function toggleDarkMode() {
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+    }
+
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+    darkModeToggleMobile.addEventListener('click', toggleDarkMode);
+
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.documentElement.classList.add('dark');
+    }
+
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute('href');
+            if (targetId !== '#') {
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+
+                    // Close mobile menu if open
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            }
+        });
+    });
+
+    // Simulate search functionality
+    const searchInput = document.querySelector('input[placeholder="Rechercher un article..."]');
+    const searchButton = searchInput.nextElementSibling;
+
+    searchButton.addEventListener('click', () => {
+        if (searchInput.value.trim()) {
+            alert(`Recherche pour: ${searchInput.value}\nCette fonctionnalité serait connectée à un système de recherche backend dans une application réelle.`);
+        }
+    });
+
+    // Simulate subscription functionality
+    const subscribeForm = document.querySelector('.cta-banner');
+    const subscribeInput = subscribeForm.querySelector('input[type="email"]');
+    const subscribeButton = subscribeForm.querySelector('button');
+
+    subscribeButton.addEventListener('click', () => {
+        if (subscribeInput.value.trim() && subscribeInput.checkValidity()) {
+            alert(`Merci pour votre inscription! Vous recevrez nos prochains articles à l'adresse: ${subscribeInput.value}`);
+            subscribeInput.value = '';
+        } else {
+            alert('Veuillez entrer une adresse email valide');
+        }
+    });
+</script>
+</body>
+</html>

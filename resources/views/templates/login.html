@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NsokoPharma - Connexion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            light: '#3b82f6',
+                            dark: '#1d4ed8'
+                        },
+                        secondary: {
+                            light: '#10b981',
+                            dark: '#059669'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+        }
+
+        .dark body {
+            background-color: #111827;
+        }
+
+        .login-illustration {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+        }
+
+        .dark .login-illustration {
+            background: linear-gradient(135deg, rgba(29, 78, 216, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+        }
+
+        .login-btn {
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .dark .login-btn:hover {
+            box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<!-- Header -->
+<header class="bg-white dark:bg-gray-800 shadow-sm">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <i class="fas fa-pills text-2xl text-primary-light dark:text-primary-dark mr-2"></i>
+            <span class="text-xl font-bold">Nsoko<span class="text-primary-light dark:text-primary-dark">Pharma</span></span>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex items-center space-x-6">
+            <a href="#support" class="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors font-medium">
+                Contacter le support
+            </a>
+
+            <!-- Dark Mode Toggle -->
+            <button id="dark-mode-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+                <i class="fas fa-moon text-gray-700 dark:hidden"></i>
+                <i class="fas fa-sun text-yellow-300 hidden dark:inline"></i>
+            </button>
+        </nav>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="flex-grow">
+    <div class="container mx-auto px-4 py-12">
+        <div class="flex flex-col lg:flex-row items-center justify-center">
+            <!-- Login Form Section -->
+            <div class="w-full lg:w-1/2 lg:pr-12 mb-12 lg:mb-0">
+                <div class="max-w-md mx-auto">
+                    <h1 class="text-3xl font-bold mb-2">Connexion à votre compte</h1>
+                    <p class="text-gray-600 dark:text-gray-300 mb-8">
+                        Accédez à votre tableau de bord pour gérer votre pharmacie en toute simplicité.
+                    </p>
+
+                    <!-- Login Form -->
+                    <form id="login-form" class="space-y-6">
+                        <!-- Email Field -->
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Adresse e-mail
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                required
+                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700"
+                                placeholder="votre@email.com"
+                            >
+                        </div>
+
+                        <!-- Password Field -->
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Mot de passe
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                required
+                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700"
+                                placeholder="••••••••"
+                            >
+                        </div>
+
+                        <!-- Remember Me & Forgot Password -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input
+                                    id="remember"
+                                    name="remember"
+                                    type="checkbox"
+                                    class="h-4 w-4 text-primary-light dark:text-primary-dark focus:ring-primary-light dark:focus:ring-primary-dark border-gray-300 dark:border-gray-600 rounded"
+                                >
+                                <label for="remember" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                                    Se souvenir de moi
+                                </label>
+                            </div>
+
+                            <div class="text-sm">
+                                <a href="#forgot-password" class="font-medium text-primary-light dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary-light transition-colors">
+                                    Mot de passe oublié ?
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div>
+                            <button
+                                type="submit"
+                                class="w-full login-btn bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md"
+                            >
+                                Connexion
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Illustration Section -->
+            <div class="w-full lg:w-1/2">
+                <div class="login-illustration p-8 rounded-2xl">
+                    <div class="relative">
+                        <div class="absolute -inset-4 bg-primary-light dark:bg-primary-dark rounded-2xl opacity-20 blur-lg"></div>
+                        <img
+                            src="https://images.unsplash.com/photo-1587854692152-e06df0b8e149?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                            alt="Pharmacien travaillant"
+                            class="relative w-full h-auto rounded-xl shadow-lg"
+                        >
+                    </div>
+
+                    <div class="mt-8 text-center">
+                        <h3 class="text-xl font-bold mb-2">Gérez votre pharmacie en toute simplicité</h3>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            NsokoPharma est la solution tout-en-un pour les pharmaciens de Kolwezi et de la RDC.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-800 dark:bg-gray-900 text-white py-8">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-pills text-2xl text-primary-light dark:text-primary-dark mr-2"></i>
+                    <span class="text-xl font-bold">Nsoko<span class="text-primary-light dark:text-primary-dark">Pharma</span></span>
+                </div>
+                <p class="text-gray-400">
+                    La solution de gestion pharmaceutique conçue pour les professionnels de santé en RDC.
+                </p>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4">Liens utiles</h3>
+                <ul class="space-y-2">
+                    <li><a href="#support" class="text-gray-400 hover:text-white transition-colors">Support technique</a></li>
+                    <li><a href="#faq" class="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
+                    <li><a href="#documentation" class="text-gray-400 hover:text-white transition-colors">Documentation</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4">Légal</h3>
+                <ul class="space-y-2">
+                    <li><a href="#privacy" class="text-gray-400 hover:text-white transition-colors">Politique de confidentialité</a></li>
+                    <li><a href="#terms" class="text-gray-400 hover:text-white transition-colors">Conditions générales</a></li>
+                    <li><a href="#cookies" class="text-gray-400 hover:text-white transition-colors">Politique des cookies</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2023 NsokoPharma. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Dark mode toggle functionality
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+    darkModeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+    });
+
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.documentElement.classList.add('dark');
+    }
+
+    // Form submission handling
+    const loginForm = document.getElementById('login-form');
+
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Get form values
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const remember = document.getElementById('remember').checked;
+
+        // Here you would typically send this data to your authentication API
+        console.log({ email, password, remember });
+
+        // Simulate successful login (replace with actual authentication)
+        setTimeout(() => {
+            alert('Connexion réussie ! Redirection vers le tableau de bord...');
+            // window.location.href = '/dashboard'; // Uncomment for actual redirection
+        }, 1000);
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute('href');
+            if (targetId !== '#') {
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

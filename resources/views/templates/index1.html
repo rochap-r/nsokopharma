@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NsokoPharma - Gestion Simplifiée pour Votre Pharmacie</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            light: '#3b82f6',
+                            dark: '#1d4ed8'
+                        },
+                        secondary: {
+                            light: '#10b981',
+                            dark: '#059669'
+                        },
+                        accent: {
+                            light: '#f59e0b',
+                            dark: '#d97706'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+        }
+
+        .dark .hero-gradient {
+            background: linear-gradient(135deg, rgba(29, 78, 216, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+        }
+
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .feature-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(255, 255, 255, 0.05);
+        }
+
+        .benefit-icon {
+            transition: all 0.3s ease;
+        }
+
+        .benefit-card:hover .benefit-icon {
+            transform: scale(1.1);
+        }
+
+        .signup-step {
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .signup-step:before {
+            content: '';
+            position: absolute;
+            left: 1.5rem;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background-color: #e5e7eb;
+        }
+
+        .dark .signup-step:before {
+            background-color: #4b5563;
+        }
+
+        .signup-step:last-child:before {
+            height: 50%;
+        }
+
+        .signup-step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .dark .signup-step-number {
+            background-color: #1d4ed8;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
+<!-- Header/Navigation -->
+<header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-sm">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <i class="fas fa-pills text-3xl text-primary-light dark:text-primary-dark mr-2"></i>
+            <span class="text-2xl font-bold">Nsoko<span class="text-primary-light dark:text-primary-dark">Pharma</span></span>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex space-x-8">
+            <a href="#about" class="font-medium hover:text-primary-light dark:hover:text-primary-dark transition-colors">À propos</a>
+            <a href="#features" class="font-medium hover:text-primary-light dark:hover:text-primary-dark transition-colors">Fonctionnalités</a>
+            <a href="#contact" class="font-medium hover:text-primary-light dark:hover:text-primary-dark transition-colors">Contact</a>
+            <a href="#signup" class="font-medium hover:text-primary-light dark:hover:text-primary-dark transition-colors">Démarrer une session</a>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-button" class="md:hidden text-gray-600 dark:text-gray-300">
+            <i class="fas fa-bars text-2xl"></i>
+        </button>
+
+        <!-- Dark Mode Toggle -->
+        <button id="dark-mode-toggle" class="ml-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+            <i class="fas fa-moon text-gray-700 dark:hidden"></i>
+            <i class="fas fa-sun text-yellow-300 hidden dark:inline"></i>
+        </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 py-2 px-4 shadow-lg">
+        <a href="#about" class="block py-2 hover:text-primary-light dark:hover:text-primary-dark transition-colors">À propos</a>
+        <a href="#features" class="block py-2 hover:text-primary-light dark:hover:text-primary-dark transition-colors">Fonctionnalités</a>
+        <a href="#contact" class="block py-2 hover:text-primary-light dark:hover:text-primary-dark transition-colors">Contact</a>
+        <a href="#signup" class="block py-2 hover:text-primary-light dark:hover:text-primary-dark transition-colors">Démarrer une session</a>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero-gradient">
+    <div class="container mx-auto px-4 py-16 md:py-24">
+        <div class="flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                    NsokoPharma : Simplifiez la gestion de votre pharmacie dès aujourd'hui
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+                    Créez votre établissement, démarrez votre session et optimisez vos ventes en toute simplicité.
+                </p>
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#tenant-creation" class="bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light text-white font-bold py-3 px-6 rounded-lg text-center transition-colors shadow-lg hover:shadow-xl">
+                        Créer mon établissement maintenant
+                    </a>
+                    <a href="#session-initiation" class="border-2 border-secondary-light dark:border-primary-dark text-primary-light dark:text-primary-dark hover:bg-gray-100 dark:hover:bg-gray-700 font-bold py-3 px-6 rounded-lg text-center transition-colors">
+                        Démarrer une session
+                    </a>
+                </div>
+            </div>
+            <div class="md:w-1/2">
+                <div class="relative">
+                    <div class="absolute -inset-4 bg-primary-light dark:bg-primary-dark rounded-2xl opacity-20 blur-lg"></div>
+                    <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80"
+                         alt="Pharmacien souriant"
+                         class="relative w-full h-auto rounded-xl shadow-xl">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-16 bg-white dark:bg-gray-800">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">À propos de NsokoPharma</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Une solution conçue spécifiquement pour répondre aux besoins des pharmacies en RDC
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+                <h3 class="text-2xl font-bold mb-4">Notre mission</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">
+                    NsokoPharma a été créé pour simplifier la gestion quotidienne des pharmacies en République Démocratique du Congo. Notre plateforme intuitive permet aux professionnels de santé de gérer efficacement leurs stocks, leurs ventes et leur personnel.
+                </p>
+                <h3 class="text-2xl font-bold mb-4">Pourquoi choisir NsokoPharma ?</h3>
+                <ul class="space-y-3 text-gray-600 dark:text-gray-300">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-secondary-light dark:text-secondary-dark mt-1 mr-2"></i>
+                        <span>Conçu spécifiquement pour le marché congolais</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-secondary-light dark:text-secondary-dark mt-1 mr-2"></i>
+                        <span>Interface simple et intuitive</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-secondary-light dark:text-secondary-dark mt-1 mr-2"></i>
+                        <span>Accessible depuis n'importe quel appareil</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-secondary-light dark:text-secondary-dark mt-1 mr-2"></i>
+                        <span>Support technique local</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 p-8 rounded-xl shadow-md">
+                <h3 class="text-2xl font-bold mb-6 text-center">Notre équipe</h3>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="text-center">
+                        <div class="bg-primary-light dark:bg-primary-dark text-white p-4 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user-md text-3xl"></i>
+                        </div>
+                        <h4 class="font-bold">Dr. Jean K.</h4>
+                        <p class="text-gray-600 dark:text-gray-300">Pharmacien consultant</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-primary-light dark:bg-primary-dark text-white p-4 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-laptop-code text-3xl"></i>
+                        </div>
+                        <h4 class="font-bold">Marie L.</h4>
+                        <p class="text-gray-600 dark:text-gray-300">Développeuse principale</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-primary-light dark:bg-primary-dark text-white p-4 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-chart-line text-3xl"></i>
+                        </div>
+                        <h4 class="font-bold">Paul M.</h4>
+                        <p class="text-gray-600 dark:text-gray-300">Expert en gestion</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-primary-light dark:bg-primary-dark text-white p-4 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-headset text-3xl"></i>
+                        </div>
+                        <h4 class="font-bold">Sophie N.</h4>
+                        <p class="text-gray-600 dark:text-gray-300">Support client</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tenant Creation Section -->
+<section id="tenant-creation" class="py-16 bg-gray-100 dark:bg-gray-700">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col lg:flex-row items-center">
+            <div class="lg:w-1/2 mb-10 lg:mb-0 lg:pr-10">
+                <h2 class="text-3xl font-bold mb-6">Créez votre établissement en 2 étapes simples</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+                    Commencez à utiliser NsokoPharma pour gérer votre pharmacie en quelques minutes seulement.
+                </p>
+
+                <div class="space-y-8">
+                    <!-- Step 1 -->
+                    <div class="signup-step">
+                        <div class="signup-step-number">1</div>
+                        <h3 class="text-xl font-bold mb-2">Informations de base</h3>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            Entrez le nom, l'adresse et le numéro de téléphone de votre établissement.
+                        </p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="signup-step">
+                        <div class="signup-step-number">2</div>
+                        <h3 class="text-xl font-bold mb-2">Confirmation</h3>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            Un email vous sera envoyé avec un code unique (par exemple code.domaine.com) pour démarrer votre session.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-10">
+                    <button id="show-tenant-form" class="inline-block bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-lg hover:shadow-xl">
+                        Créer un établissement
+                    </button>
+                </div>
+            </div>
+
+            <div class="lg:w-1/2">
+                <div id="tenant-form-container" class="hidden bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md">
+                    <h3 class="text-2xl font-bold mb-6 text-center">Création d'établissement</h3>
+                    <form id="tenant-form">
+                        <div class="mb-4">
+                            <label for="pharmacy-name" class="block font-medium mb-2">Nom de la pharmacie*</label>
+                            <input type="text" id="pharmacy-name" name="pharmacy-name" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="pharmacy-address" class="block font-medium mb-2">Adresse complète*</label>
+                            <textarea id="pharmacy-address" name="pharmacy-address" rows="3" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700" required></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="pharmacy-phone" class="block font-medium mb-2">Numéro de téléphone*</label>
+                            <input type="tel" id="pharmacy-phone" name="pharmacy-phone" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="admin-email" class="block font-medium mb-2">Email administrateur*</label>
+                            <input type="email" id="admin-email" name="admin-email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700" required>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Cet email recevra le code d'accès et aura les droits administrateur</p>
+                        </div>
+
+                        <button type="submit" class="w-full bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-lg hover:shadow-xl">
+                            Envoyer la demande
+                        </button>
+                    </form>
+                </div>
+
+                <div id="tenant-success" class="hidden bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md text-center">
+                    <div class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-check text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Demande envoyée avec succès !</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">
+                        Nous avons bien reçu votre demande de création d'établissement. Vous recevrez sous peu un email avec votre code d'accès unique.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Merci d'avoir choisi NsokoPharma !
+                    </p>
+                </div>
+
+                <div id="tenant-image" class="relative">
+                    <div class="absolute -inset-4 bg-accent-light dark:bg-accent-dark rounded-2xl opacity-20 blur-lg"></div>
+                    <img src="https://images.unsplash.com/photo-1581093450021-559792def1c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                         alt="Pharmacie bien organisée"
+                         class="relative w-full h-auto rounded-xl shadow-xl">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Session Initiation Section -->
+<section id="session-initiation" class="py-16 bg-white dark:bg-gray-800">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col lg:flex-row items-center">
+            <div class="lg:w-1/2 mb-10 lg:mb-0 lg:pr-10">
+                <h2 class="text-3xl font-bold mb-6">Démarrez votre session avec votre code d'établissement</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+                    Rendez-vous sur le lien code.domaine.com pour accéder à votre espace sécurisé.
+                </p>
+
+                <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl mb-8">
+                    <h3 class="text-xl font-bold mb-4">Comment trouver votre code ?</h3>
+                    <ul class="space-y-3 text-gray-600 dark:text-gray-300">
+                        <li class="flex items-start">
+                            <span class="bg-primary-light dark:bg-primary-dark text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0">1</span>
+                            <span>Vérifiez votre boîte email (y compris les spams)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-primary-light dark:bg-primary-dark text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0">2</span>
+                            <span>Recherchez un email de NsokoPharma avec votre code unique</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-primary-light dark:bg-primary-dark text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0">3</span>
+                            <span>Utilisez ce code pour accéder à votre espace</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="https://code.domaine.com" class="bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light text-white font-bold py-3 px-6 rounded-lg text-center transition-colors shadow-lg hover:shadow-xl">
+                        Démarrer une session
+                    </a>
+                    <button id="resend-code" class="border-2 border-primary-light dark:border-primary-dark text-primary-light dark:text-primary-dark hover:bg-gray-100 dark:hover:bg-gray-700 font-bold py-3 px-6 rounded-lg text-center transition-colors">
+                        Renvoyer le code
+                    </button>
+                </div>
+            </div>
+
+            <div class="lg:w-1/2">
+                <div class="relative">
+                    <div class="absolute -inset-4 bg-primary-light dark:bg-primary-dark rounded-2xl opacity-20 blur-lg"></div>
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                         alt="Tablette avec interface NsokoPharma"
+                         class="relative w-full h-auto rounded-xl shadow-xl">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Authentication Section -->
+<section id="authentication" class="py-16 bg-gray-100 dark:bg-gray-700">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">Accédez à votre espace NsokoPharma</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Connectez-vous avec vos identifiants ou créez un nouveau compte pour votre pharmacie
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <!-- Login Section -->
+            <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md">
+                <h3 class="text-2xl font-bold mb-6 text-center">Connexion</h3>
+                <form id="login-form">
+                    <div class="mb-4">
+                        <label for="login-email" class="block font-medium mb-2">Adresse e-mail*</label>
+                        <input type="email" id="login-email" name="login-email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="login-password" class="block font-medium mb-2">Mot de passe*</label>
+                        <input type="password" id="login-password" name="login-password" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700" required>
+                    </div>
+
+                    <div class="mb-6 flex justify-between items-center">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="remember-me" name="remember-me" class="h-4 w-4 text-primary-light dark:text-primary-dark focus:ring-primary-light dark:focus:ring-primary-dark border-gray-300 dark:border-gray-600 rounded">
+                            <label for="remember-me" class="ml-2 block text-sm text-gray-600 dark:text-gray-300">Se souvenir de moi</label>
+                        </div>
+                        <a href="#" class="text-sm text-primary-light dark:text-primary-dark hover:underline">Mot de passe oublié ?</a>
+                    </div>
+
+                    <button type="submit" class="w-full bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-lg hover:shadow-xl">
+                        Se connecter
+                    </button>
+                </form>
+            </div>
+
+            <!-- Registration Section -->
+            <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md">
+                <h3 class="text-2xl font-bold mb-6 text-center">Création de compte</h3>
+                <form id="register-form">
+                    <div class="mb-4">
+                        <label for="register-name" class="block font-medium mb-2">Nom complet*</label>
+                        <input type="text" id="register-name" name="register-name" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="register-email" class="block font-medium mb-2">Adresse e-mail*</label>
+                        <input type="email" id="register-email" name="register-email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="register-password" class="block font-medium mb-2">Mot de passe*</label>
+                        <input type="password" id="register-password" name="register-password" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700" required>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Minimum 8 caractères avec des chiffres et lettres</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="register-confirm-password" class="block font-medium mb-2">Confirmez le mot de passe*</label>
+                        <input type="password" id="register-confirm-password" name="register-confirm-password" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700" required>
+                    </div>
+
+                    <div class="mb-6 bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
+                        <p class="text-sm text-blue-800 dark:text-blue-200">
+                            <i class="fas fa-info-circle mr-2"></i> Le premier utilisateur créé pour un établissement reçoit automatiquement le rôle "admin". Les utilisateurs suivants auront le rôle "default" modifiable par l'admin.
+                        </p>
+                    </div>
+
+                    <button type="submit" class="w-full bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-lg hover:shadow-xl">
+                        Créer un compte
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-16 bg-white dark:bg-gray-800">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">Fonctionnalités clés</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Découvrez comment NsokoPharma simplifie la gestion quotidienne de votre pharmacie
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+            <!-- Feature 1 -->
+            <div class="feature-card bg-gray-50 dark:bg-gray-700 p-8 rounded-xl shadow-md">
+                <div class="text-primary-light dark:text-primary-dark text-5xl mb-6">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Bibliothèque de produits préremplis</h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Référencez rapidement les produits dont vous avez besoin et configurez votre catalogue personnalisé. Notre base de données contient déjà les médicaments les plus courants en RDC.
+                </p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-card bg-gray-50 dark:bg-gray-700 p-8 rounded-xl shadow-md">
+                <div class="text-primary-light dark:text-primary-dark text-5xl mb-6">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Gestion des stocks critiques</h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Restez informé des ruptures de stock grâce à des alertes automatiques. Configurez des seuils minimums pour chaque produit et recevez des notifications avant qu'ils ne soient épuisés.
+                </p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-card bg-gray-50 dark:bg-gray-700 p-8 rounded-xl shadow-md">
+                <div class="text-primary-light dark:text-primary-dark text-5xl mb-6">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Rappels de péremption</h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Évitez les pertes avec des notifications pour les produits expirants. Le système vous alerte automatiquement lorsque la date de péremption approche.
+                </p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="feature-card bg-gray-50 dark:bg-gray-700 p-8 rounded-xl shadow-md">
+                <div class="text-primary-light dark:text-primary-dark text-5xl mb-6">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Multi-utilisateurs</h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Attribuez des rôles et gérez les accès en toute simplicité. Contrôlez qui peut voir et modifier quelles informations dans votre pharmacie.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="py-16 bg-gray-100 dark:bg-gray-700">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">Avantages de NsokoPharma</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Adoptez NsokoPharma pour une gestion simplifiée de votre pharmacie
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Benefit 1 -->
+            <div class="benefit-card bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md">
+                <div class="benefit-icon bg-primary-light dark:bg-primary-dark text-white p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+                    <i class="fas fa-clock text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Gagnez du temps</h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Automatisez les tâches répétitives et concentrez-vous sur vos patients plutôt que sur la paperasse.
+                </p>
+            </div>
+
+            <!-- Benefit 2 -->
+            <div class="benefit-card bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md">
+                <div class="benefit-icon bg-primary-light dark:bg-primary-dark text-white p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+                    <i class="fas fa-check-circle text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Évitez les erreurs</h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Minimisez les erreurs humaines dans la gestion des stocks et des prescriptions médicamenteuses.
+                </p>
+            </div>
+
+            <!-- Benefit 3 -->
+            <div class="benefit-card bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md">
+                <div class="benefit-icon bg-primary-light dark:bg-primary-dark text-white p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+                    <i class="fas fa-chart-line text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Augmentez vos profits</h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Optimisez votre gestion des stocks et identifiez les opportunités commerciales grâce à nos analyses détaillées.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-primary-light dark:bg-primary-dark">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold text-white mb-6">Rejoignez NsokoPharma aujourd'hui</h2>
+        <p class="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
+            Transformez la gestion de votre pharmacie avec notre solution simple et efficace.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <a href="#tenant-creation" class="bg-white text-primary-light dark:text-primary-dark hover:bg-gray-100 font-bold py-3 px-6 rounded-lg text-center transition-colors shadow-lg hover:shadow-xl">
+                Créer mon établissement maintenant
+            </a>
+            <a href="#session-initiation" class="border-2 border-white text-white hover:bg-white hover:text-primary-light dark:hover:text-primary-dark font-bold py-3 px-6 rounded-lg text-center transition-colors">
+                Démarrer une session
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-16 bg-white dark:bg-gray-800">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">Contactez notre équipe</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Vous avez des questions sur NsokoPharma ? Notre équipe est là pour vous aider.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div>
+                <h3 class="text-2xl font-bold mb-6">Nos coordonnées</h3>
+
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <div class="bg-primary-light dark:bg-primary-dark text-white p-3 rounded-full mr-4 flex-shrink-0">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-1">Adresse</h4>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Avenue des Pharmaciens, 456<br>
+                                Kolwezi, Lualaba<br>
+                                République Démocratique du Congo
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <div class="bg-primary-light dark:bg-primary-dark text-white p-3 rounded-full mr-4 flex-shrink-0">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-1">Téléphone</h4>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                +243 81 234 5678<br>
+                                +243 89 876 5432
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <div class="bg-primary-light dark:bg-primary-dark text-white p-3 rounded-full mr-4 flex-shrink-0">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-1">Email</h4>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                contact@nsokopharma.cd<br>
+                                support@nsokopharma.cd
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <div class="bg-primary-light dark:bg-primary-dark text-white p-3 rounded-full mr-4 flex-shrink-0">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-1">Heures d'ouverture</h4>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Lundi - Vendredi: 8h00 - 17h00<br>
+                                Samedi: 9h00 - 13h00
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 dark:bg-gray-700 p-8 rounded-xl shadow-md">
+                <h3 class="text-2xl font-bold mb-6">Envoyez-nous un message</h3>
+                <form id="contact-form">
+                    <div class="mb-4">
+                        <label for="contact-name" class="block font-medium mb-2">Nom complet*</label>
+                        <input type="text" id="contact-name" name="contact-name" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="contact-email" class="block font-medium mb-2">Email*</label>
+                        <input type="email" id="contact-email" name="contact-email" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="contact-subject" class="block font-medium mb-2">Sujet*</label>
+                        <select id="contact-subject" name="contact-subject" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700" required>
+                            <option value="">Sélectionnez un sujet</option>
+                            <option value="support">Support technique</option>
+                            <option value="sales">Demande commerciale</option>
+                            <option value="partnership">Partenariat</option>
+                            <option value="other">Autre</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="contact-message" class="block font-medium mb-2">Message*</label>
+                        <textarea id="contact-message" name="contact-message" rows="5" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark bg-white dark:bg-gray-700" required></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-lg hover:shadow-xl">
+                        Envoyer le message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-800 dark:bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-pills text-3xl text-primary-light dark:text-primary-dark mr-2"></i>
+                    <span class="text-2xl font-bold">Nsoko<span class="text-primary-light dark:text-primary-dark">Pharma</span></span>
+                </div>
+                <p class="text-gray-400 mb-4">
+                    La solution de gestion pharmaceutique conçue pour les professionnels de santé en RDC.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4">Liens rapides</h3>
+                <ul class="space-y-2">
+                    <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">À propos</a></li>
+                    <li><a href="#features" class="text-gray-400 hover:text-white transition-colors">Fonctionnalités</a></li>
+                    <li><a href="#pricing" class="text-gray-400 hover:text-white transition-colors">Tarifs</a></li>
+                    <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4">Ressources</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Documentation</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Support</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-bold mb-4">Légal</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Politique de confidentialité</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Conditions générales</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Mentions légales</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
+            <p>&copy; 2023 NsokoPharma. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+    darkModeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+    });
+
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.documentElement.classList.add('dark');
+    }
+
+    // Tenant creation form toggle
+    const showTenantForm = document.getElementById('show-tenant-form');
+    const tenantFormContainer = document.getElementById('tenant-form-container');
+    const tenantImage = document.getElementById('tenant-image');
+    const tenantSuccess = document.getElementById('tenant-success');
+    const tenantForm = document.getElementById('tenant-form');
+
+    showTenantForm.addEventListener('click', () => {
+        tenantFormContainer.classList.remove('hidden');
+        tenantImage.classList.add('hidden');
+        showTenantForm.classList.add('hidden');
+    });
+
+    tenantForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Here you would typically send the form data to your server
+        console.log('Tenant form submitted');
+
+        // Show success message
+        tenantFormContainer.classList.add('hidden');
+        tenantSuccess.classList.remove('hidden');
+
+        // Reset form
+        tenantForm.reset();
+    });
+
+    // Resend code button
+    const resendCode = document.getElementById('resend-code');
+
+    resendCode.addEventListener('click', () => {
+        // Here you would typically trigger a code resend
+        console.log('Resend code requested');
+
+        // Show temporary message
+        const originalText = resendCode.textContent;
+        resendCode.textContent = 'Code envoyé !';
+        resendCode.classList.remove('border-primary-light', 'dark:border-primary-dark', 'text-primary-light', 'dark:text-primary-dark', 'hover:bg-gray-100', 'dark:hover:bg-gray-700');
+        resendCode.classList.add('border-green-500', 'text-green-500', 'hover:bg-green-50');
+
+        // Reset after 3 seconds
+        setTimeout(() => {
+            resendCode.textContent = originalText;
+            resendCode.classList.remove('border-green-500', 'text-green-500', 'hover:bg-green-50');
+            resendCode.classList.add('border-primary-light', 'dark:border-primary-dark', 'text-primary-light', 'dark:text-primary-dark', 'hover:bg-gray-100', 'dark:hover:bg-gray-700');
+        }, 3000);
+    });
+
+    // Login form
+    const loginForm = document.getElementById('login-form');
+
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Here you would typically validate and send the login data
+        console.log('Login form submitted');
+
+        // For demo purposes, just show an alert
+        alert('Fonctionnalité de connexion démo. En production, cela enverrait les données à votre serveur.');
+    });
+
+    // Register form
+    const registerForm = document.getElementById('register-form');
+
+    registerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Here you would typically validate and send the registration data
+        console.log('Register form submitted');
+
+        // For demo purposes, just show an alert
+        alert('Fonctionnalité d\'inscription démo. En production, cela enverrait les données à votre serveur.');
+    });
+
+    // Contact form
+    const contactForm = document.getElementById('contact-form');
+
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Here you would typically send the contact form data
+        console.log('Contact form submitted');
+
+        // Show success message
+        alert('Merci pour votre message ! Nous vous contacterons bientôt.');
+
+        // Reset form
+        contactForm.reset();
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+
+                // Close mobile menu if open
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
