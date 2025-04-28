@@ -1,10 +1,7 @@
 {{--logo--}}
-<div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-    <div class="flex items-center">
-        <i class="fas fa-pills text-2xl text-primary-light dark:text-primary-dark mr-2"></i>
-        <span class="logo-text text-xl font-bold">Nsoko<span class="text-primary-light dark:text-primary-dark">Pharma</span></span>
+<div class="flex items-center">
+    <i class="fas fa-pills text-2xl mb-2 mr-0.5 flex items-center" style="color: #2563eb!important;"></i>
+    <div class="logo-text font-bold text-lg" x-show="sidebarOpen">
+        <span style="color: #000!important;">Nsoko</span><span style="color: #2563eb;">Pharma</span>
     </div>
-    <button id="sidebar-toggle" class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
-        <i class="fas fa-bars"></i>
-    </button>
 </div>

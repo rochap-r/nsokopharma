@@ -25,12 +25,7 @@
         <!-- Sidebar Header -->
         <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
             <a href="{{ route('dashboard') }}" class="flex items-center" wire:navigate>
-                <div class="flex items-center">
-                    <i class="fas fa-pills text-2xl mb-2 mr-0.5 flex items-center" style="color: #2563eb!important;"></i>
-                    <div class="logo-text font-bold text-lg" x-show="sidebarOpen">
-                        <span style="color: #000!important;">Nsoko</span><span style="color: #2563eb;">Pharma</span>
-                    </div>
-                </div>
+                <x-app-logo />
             </a>
             <button @click="toggleSidebar" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                 <i class="fas fa-bars text-gray-500 dark:text-gray-400"></i>

@@ -30,6 +30,9 @@ class Login extends Component
      */
     public function login(): void
     {
+        if (!tenant()) {
+            abort(403, 'Vous n\'avez pas la permission d\'accéder à cette ressource.');
+        }
         $this->validate();
 
         $this->ensureIsNotRateLimited();
@@ -44,7 +47,6 @@ class Login extends Component
 
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
-
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
 
@@ -75,5 +77,15 @@ class Login extends Component
     protected function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+    }
+
+    public function render()
+    {
+
+
+        if (!tenant()) {
+            $this->redirectIntended(default: route('home', absolute: false), navigate: true);
+        }
+        return view('livewire.auth.login');
     }
 }

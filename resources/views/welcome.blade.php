@@ -126,7 +126,7 @@
             <a href="#about" class="font-medium hover:text-primary-light dark:hover:text-primary-dark transition-colors">À propos</a>
             <a href="#features" class="font-medium hover:text-primary-light dark:hover:text-primary-dark transition-colors">Fonctionnalités</a>
             <a href="#benefits" class="font-medium hover:text-primary-light dark:hover:text-primary-dark transition-colors">Avantages</a>
-            <a href="#signup" class="font-medium hover:text-primary-light dark:hover:text-primary-dark transition-colors">Inscription</a>
+            <a href="{{ route('registration') }}" class="font-medium hover:text-primary-light dark:hover:text-primary-dark transition-colors">Inscription</a>
             <a href="#contact" class="font-medium hover:text-primary-light dark:hover:text-primary-dark transition-colors">Contact</a>
         </nav>
 
@@ -147,7 +147,7 @@
         <a href="#about" class="block py-2 hover:text-primary-light dark:hover:text-primary-dark transition-colors">À propos</a>
         <a href="#features" class="block py-2 hover:text-primary-light dark:hover:text-primary-dark transition-colors">Fonctionnalités</a>
         <a href="#benefits" class="block py-2 hover:text-primary-light dark:hover:text-primary-dark transition-colors">Avantages</a>
-        <a href="#signup" class="block py-2 hover:text-primary-light dark:hover:text-primary-dark transition-colors">Inscription</a>
+        <a href="{{ route('registration') }}" class="block py-2 hover:text-primary-light dark:hover:text-primary-dark transition-colors">Inscription</a>
         <a href="#contact" class="block py-2 hover:text-primary-light dark:hover:text-primary-dark transition-colors">Contact</a>
     </div>
 </header>
@@ -164,10 +164,10 @@
                     NsokoPharma offre une solution complète pour gérer efficacement votre pharmacie, avec des outils conçus spécifiquement pour les professionnels de santé en RDC.
                 </p>
                 <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="{{ route('identification') }}" class="bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light text-white font-bold py-3 px-6 rounded-lg text-center transition-colors shadow-lg hover:shadow-xl">
+                    <a href="{{ route('identification') }}"  class="bg-primary-light dark:bg-primary-dark hover:bg-primary-dark dark:hover:bg-primary-light text-white font-bold py-3 px-6 rounded-lg text-center transition-colors shadow-lg hover:shadow-xl">
                         Démarrer la session !
                     </a>
-                    <a href="{{ route('registration') }}" class="border-2 border-secondary-light dark:border-primary-dark text-primary-light dark:text-primary-dark hover:bg-gray-100 dark:hover:bg-gray-700 font-bold py-3 px-6 rounded-lg text-center transition-colors">
+                    <a href="{{ route('registration') }}"  class="border-2 border-secondary-light dark:border-primary-dark text-primary-light dark:text-primary-dark hover:bg-gray-100 dark:hover:bg-gray-700 font-bold py-3 px-6 rounded-lg text-center transition-colors">
                         Créer Votre Etablissement
                     </a>
                 </div>

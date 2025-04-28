@@ -26,7 +26,7 @@
                 </div>
             </flux:menu.radio.group>
             <flux:menu.separator />
-            @cannot('view-roles')
+            @can('view-roles')
             <flux:menu.radio.group>
                 <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
             </flux:menu.radio.group>

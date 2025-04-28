@@ -15,26 +15,26 @@ class TenantSeeder extends Seeder
     {
         // for multi-tenancy
         $t1=Tenant::create([
-            'id' => 'Tenant1',
-            'name' => 'Tenant 1',
+            'id' => 'root000',
+            'name' => 'Root',
             'address' => 'Address1',
             'phone' => '123456789',]);
 
-        $t1->domains()->create(['domain' => 'tenant1.'. parse_url(config('app.url'), PHP_URL_HOST)]);
+        $t1->domains()->create(['domain' => 'root000.'. parse_url(config('app.url'), PHP_URL_HOST)]);
 
-        $t2=Tenant::create([
-            'id' => 'Tenant2',
+        /*$t2=Tenant::create([
+            'id' => 'tenant2',
             'name' => 'Tenant 2',
             'address' => 'Address2',
             'phone' => '123456789',]);
         $t2->domains()->create(['domain' => 'tenant2.' . parse_url(config('app.url'), PHP_URL_HOST)]);
 
         $t3=Tenant::create([
-            'id' => 'Tenant3',
+            'id' => 'tenant3',
             'name' => 'Tenant 3',
             'address' => 'Address3',
             'phone' => '123456789',]);
         $t3->domains()->create(['domain' => 'tenant3.' . parse_url(config('app.url'), PHP_URL_HOST)]);
-
+        */
     }
 }

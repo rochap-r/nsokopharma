@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
@@ -16,9 +18,14 @@ class DatabaseSeeder extends Seeder
         $this->call([
             TenantSeeder::class,
         ]);
-        User::factory(30)->create();
 
-        // Liste des permissions
+        //User::factory(10)->create();
+
+        $user = User::factory()->create([
+            'name' => 'Rodrigue CHOT',
+            'email' => 'rodriguechot@gmail.com',
+        ]);
+
         $permissions = [
             'create-user',
             'edit-user',
@@ -38,10 +45,12 @@ class DatabaseSeeder extends Seeder
             'delete-permission',
         ];
 
-        // Créer les permissions
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }
 
+        $role = Role::firstOrCreate(['name' => 'Root', 'tenant_id' => $user->tenant_id]);
+        $role->syncPermissions(Permission::all());
+        $user->assignRole($role);
     }
 }
