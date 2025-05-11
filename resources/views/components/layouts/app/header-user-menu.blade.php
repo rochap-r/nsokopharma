@@ -26,11 +26,14 @@
                 </div>
             </flux:menu.radio.group>
             <flux:menu.separator />
-            @can('view-roles')
             <flux:menu.radio.group>
-                <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+                <flux:menu.item :href="route('settings.profile')" icon="user" wire:navigate>{{ __('Mon Profil') }}</flux:menu.item>
+                <flux:menu.item :href="route('settings.password')" icon="key" wire:navigate>{{ __('Mot de passe') }}</flux:menu.item>
+                <flux:menu.item :href="route('settings.appearance')" icon="palette" wire:navigate>{{ __('Apparence') }}</flux:menu.item>
+                @can('manage-roles')
+                <flux:menu.item :href="route('settings.roles.index')" icon="shield-check" wire:navigate>{{ __('Rôles et Permissions') }}</flux:menu.item>
+                @endcan
             </flux:menu.radio.group>
-            @endcan
             <flux:menu.separator />
             <form method="POST" action="{{ route('logout') }}" class="w-full">
                 @csrf

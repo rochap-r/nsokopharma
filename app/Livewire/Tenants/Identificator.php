@@ -9,7 +9,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-#[Layout('components.layouts.landing')]
+#[Layout('components.layouts.auth')]
 class Identificator extends Component
 {
     #[Validate('required|string')]

@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             TenantSeeder::class,
+            PermissionSeeder::class,
         ]);
 
         //User::factory(10)->create();
@@ -26,28 +27,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'rodriguechot@gmail.com',
         ]);
 
-        $permissions = [
-            'create-user',
-            'edit-user',
-            'delete-user',
-            'show-user',
-            'view-tenants',
-            'create-tenant',
-            'edit-tenant',
-            'delete-tenant',
-            'view-roles',
-            'create-role',
-            'edit-role',
-            'delete-role',
-            'view-permissions',
-            'create-permission',
-            'edit-permission',
-            'delete-permission',
-        ];
-
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
-        }
+        // Les permissions sont maintenant gérées par le PermissionSeeder
 
         $role = Role::firstOrCreate(['name' => 'Root', 'tenant_id' => $user->tenant_id]);
         $role->syncPermissions(Permission::all());

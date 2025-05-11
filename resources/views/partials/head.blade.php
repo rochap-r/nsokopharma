@@ -127,6 +127,7 @@
     .dark ::-webkit-scrollbar-thumb:hover {
         background: #6b7280;
     }
+
 </style>
 @fluxAppearance
 @stack('styles')

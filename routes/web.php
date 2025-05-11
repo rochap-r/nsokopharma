@@ -21,7 +21,7 @@ Route::group(['domain' => config('tenancy.central_domains')[0]], function () {
 
 });
 
+// Inclure les routes pour les rôles et permissions
 
 
 require __DIR__.'/auth.php';
-

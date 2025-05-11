@@ -23,6 +23,10 @@ class Register extends Component
 
     public string $password_confirmation = '';
 
+    public string $pharmacy_name = '';
+
+    public string $pharmacy_address = '';
+
     /**
      * Handle an incoming registration request.
      */
@@ -41,19 +45,29 @@ class Register extends Component
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            'pharmacy_name' => ['required', 'string', 'max:255'],
+            'pharmacy_address' => ['required', 'string', 'max:255'],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
 
-        event(new Registered(($user = User::create($validated))));
+        // Création de l'utilisateur
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+            // Stockez des informations sur la pharmacie dans les métadonnées de l'utilisateur
+            'meta' => [
+                'pharmacy_name' => $validated['pharmacy_name'],
+                'pharmacy_address' => $validated['pharmacy_address']
+            ]
+        ]);
+
+        event(new Registered($user));
 
         // Create the admin role for the tenant
         $adminRole = Role::firstOrCreate(['name' => 'Admin']);
-        //ce code servira à filtrer les permissions pour l'admin tout en lui retirant celles qu'il ne doit pas avoir
 
-        /*$filtered = User::whereNotIn('email', ['morris.champlin@example.com', 'rod99@example.net']);
-        $filtered=$filtered->get();
-        dd($filtered);*/
         $permissions=Permission::WhereNotIn('name',[])->get();
 
         // Assign the permissions to the role admin
@@ -71,12 +85,22 @@ class Register extends Component
 
     public function render()
     {
-
         // If there is no tenant or the tenant already has at least one user,
         // redirect the user to the home page
         if (!tenant() || User::all()->count() != 0) {
             $this->redirectIntended(default: route('home', absolute: false), navigate: true);
         }
-        return view('livewire.auth.register');
+        return view('livewire.auth.register', [
+            'title' => 'Création de compte'
+        ]);
+    }
+
+    /**
+     * Toggle theme preferences
+     */
+    public function toggleTheme()
+    {
+        $theme = cookie('theme') === 'dark' ? 'light' : 'dark';
+        cookie()->queue(cookie('theme', $theme, 60 * 24 * 365));
     }
 }

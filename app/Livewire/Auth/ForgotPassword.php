@@ -24,4 +24,20 @@ class ForgotPassword extends Component
 
         session()->flash('status', __('A reset link will be sent if the account exists.'));
     }
+
+    /**
+     * Toggle theme preferences
+     */
+    public function toggleTheme()
+    {
+        $theme = cookie('theme') === 'dark' ? 'light' : 'dark';
+        cookie()->queue(cookie('theme', $theme, 60 * 24 * 365));
+    }
+
+    public function render()
+    {
+        return view('livewire.auth.forgot-password', [
+            'title' => 'Récupération de mot de passe'
+        ]);
+    }
 }

@@ -81,11 +81,20 @@ class Login extends Component
 
     public function render()
     {
-
-
         if (!tenant()) {
             $this->redirectIntended(default: route('home', absolute: false), navigate: true);
         }
-        return view('livewire.auth.login');
+        return view('livewire.auth.login', [
+            'title' => 'Connexion'
+        ]);
+    }
+
+    /**
+     * Toggle theme preferences
+     */
+    public function toggleTheme()
+    {
+        $theme = cookie('theme') === 'dark' ? 'light' : 'dark';
+        cookie()->queue(cookie('theme', $theme, 60 * 24 * 365));
     }
 }

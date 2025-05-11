@@ -6,7 +6,7 @@ use App\Models\Tenant;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-#[Layout('components.layouts.landing')]
+#[Layout('components.layouts.auth')]
 class Register extends Component
 {
 

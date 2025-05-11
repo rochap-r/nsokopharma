@@ -34,4 +34,20 @@ class ConfirmPassword extends Component
 
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
+
+    /**
+     * Toggle theme preferences
+     */
+    public function toggleTheme()
+    {
+        $theme = cookie('theme') === 'dark' ? 'light' : 'dark';
+        cookie()->queue(cookie('theme', $theme, 60 * 24 * 365));
+    }
+
+    public function render()
+    {
+        return view('livewire.auth.confirm-password', [
+            'title' => 'Confirmation du mot de passe'
+        ]);
+    }
 }

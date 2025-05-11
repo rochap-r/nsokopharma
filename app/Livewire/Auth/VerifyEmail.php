@@ -36,4 +36,20 @@ class VerifyEmail extends Component
 
         $this->redirect('/', navigate: true);
     }
+
+    /**
+     * Toggle theme preferences
+     */
+    public function toggleTheme()
+    {
+        $theme = cookie('theme') === 'dark' ? 'light' : 'dark';
+        cookie()->queue(cookie('theme', $theme, 60 * 24 * 365));
+    }
+
+    public function render()
+    {
+        return view('livewire.auth.verify-email', [
+            'title' => 'Vérification de l\'adresse e-mail'
+        ]);
+    }
 }

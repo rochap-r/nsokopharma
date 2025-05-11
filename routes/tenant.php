@@ -36,7 +36,7 @@ Route::middleware([
     });
 
     Route::view('/', 'dashboard')
-        ->middleware([ 'verified'])
+        ->middleware(['verified'])
         ->name('dashboard');
 
 
@@ -45,8 +45,19 @@ Route::middleware([
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
-
-
+    
+    // Routes pour les rôles et permissions
+    Route::get('settings/roles', App\Livewire\Settings\Roles\Index::class)
+        ->name('settings.roles.index')
+        ->middleware('can:manage-roles');
+    Route::get('settings/roles/create', App\Livewire\Settings\Roles\CreateEdit::class)
+        ->name('settings.roles.create')
+        ->middleware('can:manage-roles');
+    Route::get('settings/roles/{id}/edit', App\Livewire\Settings\Roles\CreateEdit::class)
+        ->name('settings.roles.edit')
+        ->middleware('can:manage-roles');
+    Route::get('settings/roles/{id}/permissions', App\Livewire\Settings\Roles\Permissions::class)
+        ->name('settings.roles.permissions')
+        ->middleware('can:manage-roles');
 
 });
-

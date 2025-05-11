@@ -1,6 +1,6 @@
 <x-layouts.app :title="__('Dashboard')">
     <!-- Main Content Container -->
-    <div class="p-6 max-w-full overflow-x-hidden">
+    <div class="w-full">
         <!-- Alerts Section -->
         <div class="mb-6 space-y-3">
             <div class="bg-red-50 dark:bg-red-900/10 border-l-4 border-red-500 dark:border-red-400 p-4 fade-in">
@@ -199,9 +199,9 @@
                                 <div class="text-sm text-gray-900 dark:text-white">156</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
-                                                42 en stock
-                                            </span>
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
+                                    42 en stock
+                                </span>
                             </td>
                         </tr>
                         <tr>
@@ -222,9 +222,9 @@
                                 <div class="text-sm text-gray-900 dark:text-white">98</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200">
-                                                12 en stock
-                                            </span>
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200">
+                                    12 en stock
+                                </span>
                             </td>
                         </tr>
                         <tr>
@@ -245,9 +245,9 @@
                                 <div class="text-sm text-gray-900 dark:text-white">87</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200">
-                                                Rupture
-                                            </span>
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200">
+                                    Rupture
+                                </span>
                             </td>
                         </tr>
                         </tbody>
@@ -313,9 +313,9 @@
                             <div class="text-sm text-gray-500 dark:text-gray-400">15/12/2023</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
-                                            Bon
-                                        </span>
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
+                                Bon
+                            </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                             <button class="text-primary-light dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary-light mr-3">
@@ -348,9 +348,9 @@
                             <div class="text-sm text-gray-500 dark:text-gray-400">30/11/2023</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200">
-                                            Faible
-                                        </span>
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200">
+                                Faible
+                            </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                             <button class="text-primary-light dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary-light mr-3">
@@ -383,9 +383,9 @@
                             <div class="text-sm text-gray-500 dark:text-gray-400">15/01/2024</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200">
-                                            Rupture
-                                        </span>
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200">
+                                Rupture
+                            </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                             <button class="text-primary-light dark:text-primary-dark hover:text-primary-dark dark:hover:text-primary-light mr-3">

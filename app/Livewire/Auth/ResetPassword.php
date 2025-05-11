@@ -63,7 +63,7 @@ class ResetPassword extends Component
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
-        if ($status != Password::PasswordReset) {
+        if ($status != Password::PASSWORD_RESET) {
             $this->addError('email', __($status));
 
             return;
@@ -72,5 +72,21 @@ class ResetPassword extends Component
         Session::flash('status', __($status));
 
         $this->redirectRoute('login', navigate: true);
+    }
+
+    /**
+     * Toggle theme preferences
+     */
+    public function toggleTheme()
+    {
+        $theme = cookie('theme') === 'dark' ? 'light' : 'dark';
+        cookie()->queue(cookie('theme', $theme, 60 * 24 * 365));
+    }
+
+    public function render()
+    {
+        return view('livewire.auth.reset-password', [
+            'title' => 'Réinitialisation du mot de passe'
+        ]);
     }
 }
