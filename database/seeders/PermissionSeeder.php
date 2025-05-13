@@ -20,6 +20,7 @@ class PermissionSeeder extends Seeder
             'users.create',
             'users.edit',
             'users.delete',
+            'manage-users', // Permission spéciale pour accéder à la page de gestion des utilisateurs
         ];
 
         // Permissions pour la gestion des rôles

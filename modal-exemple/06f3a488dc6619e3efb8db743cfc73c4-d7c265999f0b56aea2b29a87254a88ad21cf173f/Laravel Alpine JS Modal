@@ -1,5 +1,0 @@
-// open modal from livewire component
-$this->dispatch('open-modal', name: 'user-details');
-
-// close modal
-$this->dispatch('close-modal');

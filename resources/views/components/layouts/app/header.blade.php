@@ -17,10 +17,12 @@
 
         <!-- Right-side header content -->
         <div class="flex items-center space-x-4">
-            <!-- Dark Mode Toggle -->
-            <button @click="toggleDarkMode" class="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none">
-                <i class="fas" :class="{'fa-moon': !darkMode, 'fa-sun': darkMode}"></i>
-            </button>
+            <!-- Dark Mode Toggle avec Flux Radio Group -->
+            <flux:radio.group x-data variant="segmented" x-model="$flux.appearance">
+                <flux:radio value="light" icon="sun">{{ __('Light') }}</flux:radio>
+                <flux:radio value="dark" icon="moon">{{ __('Dark') }}</flux:radio>
+                <flux:radio value="system" icon="computer-desktop">{{ __('System') }}</flux:radio>
+            </flux:radio.group>
 
             <!-- Notifications Dropdown -->
             <div class="relative" x-data="{ open: false }" @click.away="open = false">
@@ -82,6 +84,9 @@
                     <a href="{{ route('settings.roles.index') }}" wire:navigate class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <i class="fas fa-user-shield mr-2"></i> {{ __('Rôles et Permissions') }}
                     </a>
+                    @endcan
+                    @can('manage-users')
+                        <flux:menu.item :href="route('settings.users.index')" icon="users" wire:navigate>{{ __('Gestion des Utilisateurs') }}</flux:menu.item>
                     @endcan
                     <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
                     <form method="POST" action="{{ route('logout') }}" class="w-full">

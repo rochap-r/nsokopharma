@@ -60,4 +60,17 @@ Route::middleware([
         ->name('settings.roles.permissions')
         ->middleware('can:manage-roles');
 
+    // Routes pour la gestion des utilisateurs
+    Route::get('settings/users', App\Livewire\Settings\Users\Index::class)
+        ->name('settings.users.index')
+        ->middleware('can:manage-users');
+    Route::get('settings/users/create', App\Livewire\Settings\Users\CreateEdit::class)
+        ->name('settings.users.create')
+        ->middleware('can:manage-users');
+    Route::get('settings/users/{id}/edit', App\Livewire\Settings\Users\CreateEdit::class)
+        ->name('settings.users.edit')
+        ->middleware('can:manage-users');
+    Route::get('settings/users/{id}/show', App\Livewire\Settings\Users\Show::class)
+        ->name('settings.users.show')
+        ->middleware('can:manage-users');
 });

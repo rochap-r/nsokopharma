@@ -1,9 +1,9 @@
 @props(['type' => 'success'])
 
-<div 
-    x-data="{ 
-        show: false, 
-        message: '', 
+<div
+    x-data="{
+        show: false,
+        message: '',
         type: 'success',
         styles: {
             success: {
@@ -75,7 +75,7 @@
         show = true;
         message = $event.detail[0].message;
         type = $event.detail[0].type || 'success';
-        setTimeout(() => { show = false }, $event.detail[0].duration || 3000)
+        setTimeout(() => { show = false }, $event.detail[0].duration || 4500)
     "
     x-transition:enter="transform ease-out duration-300 transition"
     x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
@@ -95,7 +95,7 @@
 >
     <div class="flex items-center gap-3 w-full">
         <div class="flex-shrink-0">
-            <i class="fas text-xl" 
+            <i class="fas text-xl"
                :class="[
                    icons[type],
                    styles[type].light.icon,
@@ -104,17 +104,17 @@
             ></i>
         </div>
         <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium" 
+            <p class="text-sm font-medium"
                :class="[
                    styles[type].light.text,
                    styles[type].dark.text
-               ]" 
+               ]"
                x-text="message"
             ></p>
         </div>
         <div class="flex-shrink-0">
-            <button 
-                type="button" 
+            <button
+                type="button"
                 class="inline-flex rounded-lg p-1.5 transition-all duration-200 focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-700"
                 :class="[
                     styles[type].light.text,

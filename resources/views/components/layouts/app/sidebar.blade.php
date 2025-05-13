@@ -4,7 +4,6 @@
 <div
     x-data="{
         sidebarOpen: true,
-        darkMode: localStorage.getItem('darkMode') === 'true',
         activeTooltip: null,
         tooltipText: '',
         tooltipVisible: false,
@@ -42,17 +41,8 @@
                 }
             }
         },
-        toggleDarkMode() {
-            this.darkMode = !this.darkMode;
-            document.documentElement.classList.toggle('dark');
-            localStorage.setItem('darkMode', this.darkMode);
-            window.dispatchEvent(new CustomEvent('dark-mode-toggled'));
-        }
+
     }"
-    x-init="
-        if (darkMode) document.documentElement.classList.add('dark');
-        $watch('darkMode', value => localStorage.setItem('darkMode', value));
-    "
     class="min-h-screen"
 >
     <!-- Tooltip flottant global (un seul pour toute l'application) -->
