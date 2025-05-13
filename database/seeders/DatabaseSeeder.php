@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
 
         // Les permissions sont maintenant gérées par le PermissionSeeder
 
-        $role = Role::firstOrCreate(['name' => 'Root', 'tenant_id' => $user->tenant_id]);
+        $role = Role::firstOrCreate(['name' => 'Root-'.$user->tenant_id, 'tenant_id' => $user->tenant_id]);
         $role->syncPermissions(Permission::all());
         $user->assignRole($role);
     }

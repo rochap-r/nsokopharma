@@ -157,7 +157,7 @@
         <div class="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 mt-auto"
             :class="sidebarOpen ? 'px-4 py-4 flex items-center' : 'flex justify-center items-center py-4'">
             <div
-                @mouseenter="showTooltip($event, 'Pharmacie du Peuple - Kolwezi, RDC')"
+                @mouseenter="showTooltip($event, '{{ tenant()->name ?: 'Nom non défini' }} - {{ tenant()->address ?: 'Adresse non définie' }}')"
                 @mouseleave="hideTooltip()"
                 class="flex items-center">
                 <div class="flex-shrink-0">
@@ -169,8 +169,8 @@
                     x-cloak
                     style="display: none;"
                 >
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">Pharmacie du Peuple</p>
-                    <p class="text-xs text-gray-500 dark:text-red-400">Kolwezi, RDC</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ tenant()->name ?: 'Nom non défini' }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ tenant()->address ?: 'Adresse non définie' }}</p>
                 </div>
             </div>
         </div>

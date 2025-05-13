@@ -6,53 +6,6 @@
 
     <!-- Registration Form -->
     <form wire:submit="register" class="space-y-6">
-        <!-- Pharmacy Name -->
-        <div class="relative">
-            <label for="pharmacy_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Nom de la pharmacie <span class="text-red-500">*</span>
-            </label>
-            <div class="relative rounded-lg shadow-sm">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-clinic-medical text-gray-400 dark:text-gray-300"></i>
-                </div>
-                <input
-                    wire:model="pharmacy_name"
-                    type="text"
-                    id="pharmacy_name"
-                    required
-                    autofocus
-                    class="w-full pl-10 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-800 dark:text-white transition-all duration-200"
-                    placeholder="Ex: Pharmacie du Progrès"
-                >
-            </div>
-            @error('pharmacy_name')
-            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <!-- Pharmacy Address -->
-        <div class="relative">
-            <label for="pharmacy_address" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Adresse de la pharmacie <span class="text-red-500">*</span>
-            </label>
-            <div class="relative rounded-lg shadow-sm">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-map-marker-alt text-gray-400 dark:text-gray-300"></i>
-                </div>
-                <input
-                    wire:model="pharmacy_address"
-                    type="text"
-                    id="pharmacy_address"
-                    required
-                    class="w-full pl-10 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-800 dark:text-white transition-all duration-200"
-                    placeholder="Ex: Avenue Lumumba No. 45, Kolwezi"
-                >
-            </div>
-            @error('pharmacy_address')
-            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-            @enderror
-        </div>
-
         <!-- Manager's Name -->
         <div class="relative">
             <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">

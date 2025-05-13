@@ -21,6 +21,21 @@ class Identificator extends Component
         $this->validate();
         $this->name=Str::lower($this->name);
         $tenant=Tenant::where('id',$this->name)->first();
+
+        // Vérifier si le tenant existe
+        if (!$tenant) {
+            // Journaliser la tentative d'accès à un tenant inexistant
+            \Log::warning("Tentative d'accès à un tenant inexistant via identificateur", [
+                'tenant_id' => $this->name,
+                'ip' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
+            
+            // Ajouter un message d'erreur à l'utilisateur
+            $this->addError('name', "L'établissement spécifié n'existe pas. Veuillez vérifier l'identifiant et réessayer.");
+            return;
+        }
+
         //dd($tenant);
 
         $tenantDomain = $tenant->domains()->first()->domain;

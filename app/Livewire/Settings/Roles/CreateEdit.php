@@ -77,7 +77,7 @@ class CreateEdit extends Component
             if ($this->editMode) {
                 // Mise à jour d'un rôle existant
                 $role = Role::findOrFail($this->roleId);
-                $role->name = $this->roleName;
+                $role->name = $this->roleName.'-'.tenant()->id;
                 $role->save();
 
                 // Récupérer les objets Permission à partir des IDs
@@ -89,14 +89,14 @@ class CreateEdit extends Component
                 $this->success('Rôle mis à jour avec succès!');
             } else {
                 // Vérifier si le rôle existe déjà pour éviter l'erreur de duplicat
-                if (Role::where('name', $this->roleName)->exists()) {
+                if (Role::where('name', $this->roleName.'-'.tenant()->id)->exists()) {
                     $this->error('Ce nom de rôle existe déjà.');
                     DB::rollBack();
                     return;
                 }
 
                 // Création d'un nouveau rôle
-                $role = Role::create(['name' => $this->roleName]);
+                $role = Role::create(['name' => $this->roleName.'-'.tenant()->id, 'tenant_id' => tenant()->id]);
 
                 // Récupérer les objets Permission à partir des IDs
                 if (!empty($this->selectedPermissions)) {

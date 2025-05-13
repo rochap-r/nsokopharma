@@ -23,9 +23,6 @@ class Register extends Component
 
     public string $password_confirmation = '';
 
-    public string $pharmacy_name = '';
-
-    public string $pharmacy_address = '';
 
     /**
      * Handle an incoming registration request.
@@ -45,8 +42,6 @@ class Register extends Component
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
-            'pharmacy_name' => ['required', 'string', 'max:255'],
-            'pharmacy_address' => ['required', 'string', 'max:255'],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -56,17 +51,31 @@ class Register extends Component
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => $validated['password'],
-            // Stockez des informations sur la pharmacie dans les métadonnées de l'utilisateur
-            'meta' => [
-                'pharmacy_name' => $validated['pharmacy_name'],
-                'pharmacy_address' => $validated['pharmacy_address']
-            ]
         ]);
 
         event(new Registered($user));
 
         // Create the admin role for the tenant
-        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
+        // Check if a role with the same name exists for this tenant
+        $adminRole = Role::where('name', 'Admin')
+            ->where('tenant_id', tenant('id'))
+            ->first();
+
+        // If the role doesn't exist for this tenant, create it
+        if (!$adminRole) {
+            // Attempt to delete any possible conflicting role first
+            $rolename="Admin-".tenant('id');
+            Role::where('name', $rolename)
+                ->where('tenant_id', tenant('id'))
+                ->delete();
+
+            // Create the role with explicit attributes
+            $adminRole = new Role();
+            $adminRole->name = 'Admin-'.tenant('id');
+            $adminRole->guard_name = 'web';
+            $adminRole->tenant_id = tenant('id');
+            $adminRole->save();
+        }
 
         $permissions=Permission::WhereNotIn('name',[])->get();
 

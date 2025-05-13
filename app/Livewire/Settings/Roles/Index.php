@@ -111,7 +111,7 @@ class Index extends Component
                         foreach ($permissions as $permission) {
                             $role->revokePermissionTo($permission);
                         }
-                        
+
                         // Puis supprimer le rôle
                         $role->delete();
                         DB::commit();
@@ -135,7 +135,8 @@ class Index extends Component
     public function render()
     {
         try {
-            $roles = Role::with('permissions')
+            $roles = Role::query()
+                ->where('tenant_id', tenant('id')) // Ajouter le filtre du tenant actuel
                 ->when($this->search, function ($query) {
                     return $query->where('name', 'like', '%' . $this->search . '%');
                 })
