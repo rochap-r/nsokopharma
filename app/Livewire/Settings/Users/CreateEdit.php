@@ -7,7 +7,7 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 use App\Http\Livewire\Traits\WithToast;
 
 class CreateEdit extends Component

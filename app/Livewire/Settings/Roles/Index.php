@@ -4,7 +4,7 @@ namespace App\Livewire\Settings\Roles;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 use App\Http\Livewire\Traits\WithToast;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -28,6 +28,40 @@ class Index extends Component
     public function resetSearch()
     {
         $this->reset('search');
+    }
+
+    public function mount()
+    {
+        // Vérification des messages flash pour les afficher en toast
+        if (session()->has('success')) {
+            $this->success(session('success'), 6000);
+            session()->forget('success'); // Reset pour éviter des affichages multiples
+        }
+
+        if (session()->has('error')) {
+            $this->error(session('error'), 6000);
+            session()->forget('error'); // Reset pour éviter des affichages multiples
+        }
+
+        // Vérifier s'il y a un message toast dans la session et l'afficher
+        if (session()->has('toast_message')) {
+            $message = session('toast_message');
+            $type = session('toast_type', 'success'); // Par défaut, type success
+
+            // Appeler la méthode appropriée du trait WithToast en fonction du type
+            if ($type === 'success') {
+                $this->success($message);
+            } elseif ($type === 'error') {
+                $this->error($message);
+            } elseif ($type === 'info') {
+                $this->info($message);
+            } elseif ($type === 'warning') {
+                $this->warning($message);
+            }
+
+            // Supprimer les messages de la session pour éviter qu'ils ne s'affichent à nouveau
+            session()->forget(['toast_message', 'toast_type']);
+        }
     }
 
     public function updatingSearch()

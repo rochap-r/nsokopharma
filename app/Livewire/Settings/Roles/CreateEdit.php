@@ -3,7 +3,7 @@
 namespace App\Livewire\Settings\Roles;
 
 use Livewire\Component;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Http\Livewire\Traits\WithToast;
 use Illuminate\Support\Facades\Log;
@@ -77,7 +77,7 @@ class CreateEdit extends Component
             if ($this->editMode) {
                 // Mise à jour d'un rôle existant
                 $role = Role::findOrFail($this->roleId);
-                $role->name = $this->roleName.'-'.tenant()->id;
+                $role->name = $this->roleName;
                 $role->save();
 
                 // Récupérer les objets Permission à partir des IDs
@@ -86,7 +86,7 @@ class CreateEdit extends Component
                 // Synchroniser les permissions en utilisant la collection d'objets
                 $role->syncPermissions($permissions);
 
-                $this->success('Rôle mis à jour avec succès!');
+                $message='Rôle mis à jour avec succès!';
             } else {
                 // Vérifier si le rôle existe déjà pour éviter l'erreur de duplicat
                 if (Role::where('name', $this->roleName.'-'.tenant()->id)->exists()) {
@@ -106,13 +106,15 @@ class CreateEdit extends Component
                     $role->syncPermissions($permissions);
                 }
 
-                $this->success('Rôle créé avec succès!');
+                $message='Rôle créé avec succès!';
             }
 
             DB::commit();
 
+            session()->flash('success', $message);
+
             // Rediriger vers la liste des rôles
-            $this->redirectRoute('settings.roles.index', navigate: true);
+            $this->redirectRoute('settings.roles.index', navigate: false);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Erreur dans CreateEdit::saveRole pour "' . $this->roleName . '": ' . $e->getMessage());

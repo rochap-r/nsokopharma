@@ -7,7 +7,6 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Role;
 use App\Http\Livewire\Traits\WithToast;
 
 class Index extends Component

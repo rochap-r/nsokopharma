@@ -1,6 +1,11 @@
 /.phpunit.cache
 /node_modules
-/public/build
+# Les fichiers du dossier public/build sont commités car l'environnement de production
+# (Hostinger hPanel Business) ne supporte pas Node.js.
+# Assurez-vous de lancer `npm run build` localement avant de déployer.
+# Pour annuler cette exception, réactivez cette ligne :
+#/public/build
+
 /public/hot
 /public/storage
 /storage/*.key
