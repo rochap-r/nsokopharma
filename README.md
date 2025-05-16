@@ -11,9 +11,9 @@ NsokoPharma est un système de gestion multi-tenant conçu spécifiquement pour 
 - Le domaine central gère l'enregistrement et l'identification des tenants
 
 ### Gestion des Produits
-- Gestion des produits pharmaceutiques avec détails comme DCI (Dénomination Commune Internationale), dosage et forme galénique
-- Les produits sont catégorisés (via le modèle Category) et peuvent être organisés par rayons pour le stockage physique
-- Les produits sont classifiés par type (médicament ou dispositif) et par personne cible (adulte ou enfant)
+- Gestion détaillée des produits pharmaceutiques incluant : DCI (Dénomination Commune Internationale), dosage, et forme galénique
+- Étiquetage des produits via le modèle Category, permettant une meilleure organisation par rayons de stockage
+- Classification avancée selon le type (médicament ou dispositif médical) et le groupe cible (adulte ou enfant)
 
 ### Gestion des Stocks
 - Chaque tenant possède son propre inventaire (TenantInventory) qui référence les produits du catalogue global
